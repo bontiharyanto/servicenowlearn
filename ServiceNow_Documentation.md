@@ -193,6 +193,9 @@ flowchart LR
   IDR --> CMDB
   CMDB --> QRY[Queries / Reports]
   CMDB --> REL[CI Relationships]
+
+  note right of IDR: Cegah duplikasi
+  note right of CMDB: SSoT untuk CI & relasi
 ```
 
 ### 5.2 Event Management
@@ -202,11 +205,11 @@ flowchart LR
 #### Diagram CMDB & Discovery (Mermaid)
 ```mermaid
 flowchart TD
-  A[Device / Server] --> B[Discovery Probe]
+  A[Device/Server] --> B[Discovery Probe]
   B --> C[MID Server]
   C --> D[ServiceNow Discovery]
-  D --> E[Identification and Reconciliation]
-  E --> F[CMDB - Configuration Item]
+  D --> E[Identification & Reconciliation]
+  E --> F[CMDB (Configuration Item)]
   F --> G[Relationships]
 ```
 
@@ -228,21 +231,78 @@ sequenceDiagram
 
 ## 6. Integrasi & Otomasi
 
-### 6.1 REST API & Scripted REST
-- **REST Table API**: CRUD terhadap tabel (contoh: `incident`).
-- **Scripted REST**: endpoint kustom (logika validasi/transformasi).
-- Contoh *curl* sederhana:
+> Tujuan: menghubungkan ServiceNow dengan sistem lain secara aman, terukur, dan dapat diaudit. Bagian ini berisi pola teknis, contoh, dan praktik terbaik.
+
+### 6.1 REST Table API (Inbound)
+Gunakan untuk CRUD langsung ke tabel.
+- **Endpoint contoh**: `/api/now/table/incident`
+- **Query umum**: `sysparm_query`, `sysparm_fields`, `sysparm_limit`, `sysparm_display_value=true`
+- **Contoh**: ambil 5 incident prioritas 1
   ```bash
   curl -u user:pass \
-    "https://<instance>.service-now.com/api/now/table/incident?sysparm_limit=1"
+    "https://<instance>.service-now.com/api/now/table/incident?sysparm_limit=5&sysparm_query=priority=1"
   ```
+- **Tips**: batasi field, gunakan paging `sysparm_offset`, dan aktifkan `display_value` hanya bila perlu.
 
-### 6.2 Flow Designer
-- Otomasi berbasis *low-code*.
-- Flow = trigger + action.
-- Contoh: otomatis assign incident dengan kategori tertentu ke group support.
+### 6.2 Scripted REST API (Inbound kustom)
+Gunakan ketika perlu validasi, transformasi, atau orkestra logika kompleks.
+- **Struktur**: *API* ➜ *Resource* ➜ *Script* (request, response, error)
+- **Contoh handler**:
+  ```javascript
+  // Scripted REST Resource: POST /api/x_acme/v1/ticket
+  (function process(/*RESTAPIRequest*/ req, /*RESTAPIResponse*/ res) {
+    try {
+      var body = req.body.data;
+      if (!body || !body.short_description) {
+        return res.setStatus(400).setBody({error: 'short_description required'});
+      }
+      var gr = new GlideRecord('incident');
+      gr.initialize();
+      gr.short_description = body.short_description;
+      gr.urgency = body.urgency || 2;
+      gr.insert();
+      return res.setStatus(201).setBody({number: gr.number.toString()});
+    } catch (e) {
+      gs.error('SRAPI error: ' + e);
+      return res.setStatus(500).setBody({error: 'internal_error'});
+    }
+  })(request, response);
+  ```
+- **Gunakan**: *JWT bearer*, *OAuth 2.0*, *rate limit* via Flow Action atau BR, dan logging di `sys_logs`.
 
-#### Diagram Arsitektur Flow (Mermaid)
+### 6.3 Outbound REST, SOAP, dan Import Set
+- **Outbound REST Message** untuk panggil API eksternal. Simpan kredensial di **Connection and Credential alias**.
+- **Import Set** + **Transform Map** untuk ETL batch; jadwalkan via **Scheduled Job**.
+- **SOAP** hanya bila integrasi lama; utamakan REST.
+
+**Contoh Outbound via Script**
+```javascript
+var r = new sn_ws.RESTMessageV2('ext_user_api','get');
+// setStringParameterNoEscape('id', id);
+var resp = r.execute();
+if (resp.haveError()) {
+  gs.error('Outbound error: ' + resp.getErrorMessage());
+} else {
+  var body = resp.getBody();
+  // parse JSON dan proses
+}
+```
+
+### 6.4 IntegrationHub dan Spokes
+- **IntegrationHub** menyediakan *actions* siap pakai (Slack, Teams, Jira, GitHub, Email, Twilio, dll).
+- **Spokes**: paket konektor siap pakai. Gunakan untuk menghindari skrip manual.
+- **Subflow**: bungkus aksi integrasi agar dapat digunakan ulang lintas flow.
+
+**Pola umum**
+- *Trigger* (record updated) ➜ *Decision* ➜ *Action* (post to Slack, create Jira) ➜ *Update* work notes.
+- Simpan *mapping* field di **Data Stream Action** atau *Lookup Table* (sys_choice atau table kustom).
+
+### 6.5 Flow Designer – lanjutan
+- **Concept**: Trigger ➜ Conditions ➜ Actions ➜ Subflow ➜ Error Handler.
+- **Best practice**: kecilkan *granularity*, hindari logika bercabang sangat dalam, gunakan **Script Step** bila benar-benar perlu.
+- **Retry**: aktifkan *error handler* + retry berbasis *isTransient* (HTTP 5xx, timeout).
+
+**Diagram Arsitektur Flow**
 ```mermaid
 flowchart TD
   TRG[Trigger: Record Created or Updated] --> COND{Match Conditions?}
@@ -259,30 +319,82 @@ flowchart TD
   ERR -->|No| DONE[Flow Complete]
 ```
 
-#### Pseudo-Flow: Assign Incident Berdasar Kategori
-```text
-Trigger : When Incident is created
-If      : category == "network" and priority <= 2
-Then    : set assignment_group = "Network Support"
-          add work_notes = "Auto-assigned by Flow Designer"
-          call subflow "Notify-Oncall"
-```
+### 6.6 Event driven dan Webhook
+- **Inbound webhook**: gunakan Scripted REST sebagai endpoint; verifikasi signature HMAC.
+- **Outbound webhook**: REST Message dari BR atau Flow setelah status tertentu.
 
-#### Diagram Flow Designer (Mermaid)
+**Sequence inbound webhook**
 ```mermaid
-flowchart TD
-  A[Trigger: Incident Created] --> B{Category == Network?}
-  B -->|Ya| C[Action: Assign to Network Support Group]
-  B -->|Tidak| D[Action: Assign to Default Group]
-  C --> E[End]
-  D --> E[End]
+sequenceDiagram
+  participant EXT as External System
+  participant API as Scripted REST
+  participant SN as ServiceNow
+  EXT->>API: POST payload plus signature
+  API->>API: Verify signature and schema
+  API->>SN: Create or update record
+  SN-->>EXT: 201 or 200
 ```
 
-- Otomasi berbasis *low-code*.
-- Flow = trigger + action.
-- Contoh: otomatis assign incident dengan kategori tertentu ke group support.
+### 6.7 Email integration
+- **Inbound Email Action** untuk membuat Incident atau RITM dari email.
+- Pakai *prefix* pada subject untuk update otomatis, contoh: `Re: INC00123`.
+
+### 6.8 MID Server, JDBC, File, dan Discovery
+- **MID Server** untuk akses jaringan privat.
+- **JDBC**: tarik data database on prem ke Import Set.
+- **SFTP**: ambil file CSV lalu transform ke tabel target.
+
+### 6.9 Keamanan dan Kredensial
+- Gunakan **Credential alias** dan **Vault** (jika tersedia).
+- **Auth**: Basic, OAuth 2.0, mTLS. Hindari API key di URL.
+- **Data**: redaksi data sensitif di log; gunakan **ACL** dan **UI Policy** untuk minimisasi data.
+
+### 6.10 Error handling, Idempotensi, dan Retry
+- Tandai request eksternal dengan **request_id** unik untuk cegah duplikasi.
+- Gunakan *retry with backoff* untuk 5xx atau timeout.
+- Kirim **DLQ** ke tabel kustom untuk reprocess manual.
+
+### 6.11 Observabilitas dan Audit
+- **sys_log**, **metric**, dan **PA** untuk memantau keberhasilan integrasi.
+- Simpan **evidence**: approval id, request id, payload hash.
+
+### 6.12 Decision Matrix Integrasi
+| Kebutuhan | Disarankan |
+|---|---|
+| CRUD cepat ke tabel | REST Table API |
+| Validasi atau transform kompleks | Scripted REST |
+| Orkestrasi multi sistem | Flow Designer plus IntegrationHub |
+| Batch ETL berkala | Import Set plus Transform Map |
+| Jaringan privat | MID Server |
+| Kepatuhan plus audit ketat | Change plus Approval plus Evidence register |
+
+### 6.13 Contoh end to end: Incident to Slack and Jira
+```mermaid
+flowchart LR
+  A[Incident Priority High] --> B[Flow evaluates conditions]
+  B --> C[Post message to Slack]
+  B --> D[Create Jira Issue]
+  D --> E[Store external keys]
+  C --> F[Update work notes]
+  E --> F
+```
+
+**Langkah implementasi singkat**
+1. Buat **Subflow** `Notify Oncall` yang memanggil Slack spoke.
+2. Buat **Action** Jira Create Issue; simpan `jira_key` di field referensi.
+3. Di **Flow**, pasang trigger `Incident updated` dengan kondisi `priority == 1`.
+4. Tambah **error handler** untuk retry dan logging.
+
+### 6.14 Checklist implementasi aman
+- [ ] Semua kredensial menggunakan alias dan terenkripsi.
+- [ ] Limitasi field pada REST Table API.
+- [ ] Validasi skema pada Scripted REST.
+- [ ] Idempotensi berbasis request id.
+- [ ] Retry policy dan dead letter queue.
+- [ ] Dashboard PA untuk metrik kegagalan dan waktu siklus.
 
 ## 7. Development di ServiceNow
+ Development di ServiceNow
 - ServiceNow Studio
 - Script Include
 - GlideRecord (contoh query):
@@ -436,22 +548,13 @@ flowchart LR
 **Hak Subjek Data (DSAR) – alur singkat**:
 ```mermaid
 flowchart TD
-  RQ[Permintaan Akses/Perbaikan/Penghapusan]
-  VER[Verifikasi Identitas]
-  LOC[Cari Data terkait: User/CI/Records]
-  REV[Review Legal & DPO]
-  ACT{Disetujui?}
-  FUL[Fulfillment: Export / Rectify / Delete]
-  DEN[Penolakan beralasan]
-  LOG[Catat Evidence]
-
-  RQ --> VER
-  VER --> LOC
-  LOC --> REV
-  REV --> ACT
-  ACT -->|Ya| FUL
-  ACT -->|Tidak| DEN
-  FUL --> LOG
+  RQ[Permintaan Akses/Perbaikan/Penghapusan] --> VER[Verifikasi Identitas]
+  VER --> LOC[Cari Data terkait (User/CI/Records)]
+  LOC --> REV[Review Legal & DPO]
+  REV --> ACT{Disetujui?}
+  ACT -->|Ya| FUL[Fulfillment: Export/Rectify/Delete]
+  ACT -->|Tidak| DEN[Penolakan beralasan]
+  FUL --> LOG[Catat Evidence]
   DEN --> LOG
 ```
 

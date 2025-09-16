@@ -194,8 +194,6 @@ flowchart LR
   CMDB --> QRY[Queries / Reports]
   CMDB --> REL[CI Relationships]
 
-  note right of IDR: Cegah duplikasi
-  note right of CMDB: SSoT untuk CI & relasi
 ```
 
 ### 5.2 Event Management
@@ -205,11 +203,11 @@ flowchart LR
 #### Diagram CMDB & Discovery (Mermaid)
 ```mermaid
 flowchart TD
-  A[Device/Server] --> B[Discovery Probe]
+  A[Device / Server] --> B[Discovery Probe]
   B --> C[MID Server]
   C --> D[ServiceNow Discovery]
-  D --> E[Identification & Reconciliation]
-  E --> F[CMDB (Configuration Item)]
+  D --> E[Identification and Reconciliation]
+  E --> F[CMDB - Configuration Item]
   F --> G[Relationships]
 ```
 
@@ -548,13 +546,22 @@ flowchart LR
 **Hak Subjek Data (DSAR) – alur singkat**:
 ```mermaid
 flowchart TD
-  RQ[Permintaan Akses/Perbaikan/Penghapusan] --> VER[Verifikasi Identitas]
-  VER --> LOC[Cari Data terkait (User/CI/Records)]
-  LOC --> REV[Review Legal & DPO]
-  REV --> ACT{Disetujui?}
-  ACT -->|Ya| FUL[Fulfillment: Export/Rectify/Delete]
-  ACT -->|Tidak| DEN[Penolakan beralasan]
-  FUL --> LOG[Catat Evidence]
+  RQ[Permintaan Akses/Perbaikan/Penghapusan]
+  VER[Verifikasi Identitas]
+  LOC[Cari Data terkait: User/CI/Records]
+  REV[Review Legal & DPO]
+  ACT{Disetujui?}
+  FUL[Fulfillment: Export / Rectify / Delete]
+  DEN[Penolakan beralasan]
+  LOG[Catat Evidence]
+
+  RQ --> VER
+  VER --> LOC
+  LOC --> REV
+  REV --> ACT
+  ACT -->|Ya| FUL
+  ACT -->|Tidak| DEN
+  FUL --> LOG
   DEN --> LOG
 ```
 

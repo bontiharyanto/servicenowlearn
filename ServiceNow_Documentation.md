@@ -24,7 +24,8 @@
 - [12. Praktik Terbaik](#12-praktik-terbaik)
 - [13. Runbook Ringkas](#13-runbook-ringkas)
 - [14. Glosarium](#14-glosarium)
-- [15. Referensi](#15-referensi)
+- [15. Governance & Compliance](#15-governance)
+- [16. Referensi](#15-referensi)
 
 ---
 
@@ -259,8 +260,72 @@ Then    : set assignment_group = "Network Support"
 ## 14. Glosarium
 - Kumpulan istilah ServiceNow umum (Record, CI, SLA, CAB, dll)
 
-## 15. Referensi
+## 15. Governance & Compliance
+**Prinsip & Penerapan**:
+- **Lawful Basis & Consent** → rekam *consent/reference* pada **Contact/User**; simpan bukti persetujuan di Attachment/KB.
+- **Purpose Limitation** → kategorikan **Catalog/Workflow** berdasarkan tujuan pemrosesan; batasi *data fields* di form.
+- **Data Minimization** → gunakan **UI Policy**/**Client Script** untuk menyembunyikan field yang tidak perlu.
+- **Accuracy** → SOP koreksi data sebagai **Request Item** khusus.
+- **Storage Limitation (Retention)** → **Scheduled Job** untuk *closure/archival*; tambahkan *retention label* di record/attachment.
+- **Integrity & Confidentiality** → **ACL/Role** ketat untuk data sensitif; *encryption at rest/in transit* pada platform.
+- **Accountability** → **DPO tasks** dan **Breach workflow** sebagai Standard Change/Emergency.
+
+
+**Hak Subjek Data (DSAR) – alur singkat**:
+```mermaid
+flowchart TD
+RQ[Permintaan Akses/Perbaikan/Penghapusan] --> VER[Verifikasi Identitas]
+VER --> LOC[Cari Data terkait (User/CI/Records)]
+LOC --> REV[Review Legal & DPO]
+REV --> ACT{Disetujui?}
+ACT -->|Ya| FUL[Fulfillment: Export/Rectify/Delete]
+ACT -->|Tidak| DEN[Penolakan beralasan]
+FUL --> LOG[Catat Evidence]
+DEN --> LOG
+```
+
+
+**Register Data Processing** (contoh tabel):
+
+
+| Proses | Dasar Hukum | Kategori Data | Pemilik | Retensi | Lokasi | Catatan |
+|---|---|---|---|---|---|---|
+| Request Onboarding | Persetujuan | Identitas, Kontak | HR | 24 bln | Prod | Masking email opsional |
+| Support Ticket | Kepentingan sah | Identitas minimal | Support | 12 bln | Prod | Redaksi data sensitif |
+
+
+---
+
+
+### 15.6 CMDB Governance (Lintas Framework)
+- **Klasifikasi Data/CI**: *Public, Internal, Confidential, Restricted* → field pada CI & *data class* pada attachment.
+- **Attestation** berkala: task otomatis ke **Service Owner** untuk konfirmasi CI.
+- **Kualitas Data**: metrik *completeness, correctness, compliance* → Scorecard PA.
+- **Lifecycle**: *propose → approve → implement → review → retire* melalui Change + task ops.
+
+
+### 15.7 Change & Release Governance
+- **Standarisasi Standard Change** dengan *templat, pre-checks, otomatis approval*.
+- **Normal/Emergency**: wajib *risk assessment* & **security review** (gate di Flow Designer).
+- **Calendar**: *freeze window*, *blackout*, & *change collision detection*.
+
+
+### 15.8 Metrik & Pelaporan
+- **Governance KPIs**: % CI ter-attest, % perubahan tanpa CAB, waktu siklus Change, % SLA terpenuhi, jumlah DSAR selesai < 30 hari.
+- **Audit Dashboards**: *open findings*, *control coverage*, *evidence freshness*.
+
+
+### 15.9 Template & Artefak
+- **ADR.md** – Architecture Decision Record.
+- **CAB-Minutes.md** – Notulen CAB.
+- **Policy-Access-Control.md** – Role/ACL & review periodik.
+- **DPIA-Template.md** – Data Protection Impact Assessment.
+- **Evidence-Register.csv** – daftar bukti dengan link record.
+  
+## 16. Referensi
 - [ServiceNow Docs](https://docs.servicenow.com/)
 - [Developer Portal](https://developer.servicenow.com/)
 - [Community](https://www.servicenow.com/community.html)
 - Training & sertifikasi
+
+

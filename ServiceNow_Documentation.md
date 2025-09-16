@@ -7,15 +7,15 @@
 - [2. Getting Started](#2-getting-started)
 - [3. Konsep Dasar & Terminologi](#3-konsep-dasar--terminologi)
 - [4. ITSM](#4-itsm)
-  - [Incident Management](#incident-management)
-  - [Problem Management](#problem-management)
-  - [Change Enablement](#change-enablement)
+  - [4.1 Incident Management](#41-incident-management)
+  - [4.2 Problem Management](#42-problem-management)
+  - [4.3 Change Enablement](#43-change-enablement)
 - [5. ITOM (Pengantar)](#5-itom-pengantar)
-  - [CMDB & Discovery](#cmdb--discovery)
-  - [Event Management](#event-management)
+  - [5.1 CMDB & Discovery](#51-cmdb--discovery)
+  - [5.2 Event Management](#52-event-management)
 - [6. Integrasi & Otomasi](#6-integrasi--otomasi)
-  - [REST API & Scripted REST](#rest-api--scripted-rest)
-  - [Flow Designer](#flow-designer)
+  - [6.1 REST API & Scripted REST](#61-rest-api--scripted-rest)
+  - [6.2 Flow Designer](#62-flow-designer)
 - [7. Development di ServiceNow](#7-development-di-servicenow)
 - [8. Service Catalog & Request Fulfillment](#8-service-catalog--request-fulfillment)
 - [9. Reporting & Dashboard](#9-reporting--dashboard)
@@ -24,8 +24,7 @@
 - [12. Praktik Terbaik](#12-praktik-terbaik)
 - [13. Runbook Ringkas](#13-runbook-ringkas)
 - [14. Glosarium](#14-glosarium)
-- [15. Governance & Compliance](#15-governance)
-- [16. Referensi](#15-referensi)
+- [15. Referensi](#15-referensi)
 
 ---
 
@@ -47,7 +46,7 @@ Dokumen ini merangkum pembelajaran ServiceNow untuk skenario umum: ITSM, ITOM, d
 
 ## 4. ITSM
 
-### Incident Management
+### 4.1 Incident Management
 **Tujuan**: mengembalikan layanan normal secepatnya dan meminimalkan dampak bisnis.  
 **Alur standar**:
 1. *Log* → buat incident (portal, email, integrasi)  
@@ -61,6 +60,20 @@ Dokumen ini merangkum pembelajaran ServiceNow untuk skenario umum: ITSM, ITOM, d
 - Otomatiskan prioritas (BR/Flow) berdasar CI & layanan terdampak.
 - Template incident untuk kasus berulang.
 - SLAs: *response* & *resolution* berbasis prioritas.
+
+**Diagram Alur Incident Management (Mermaid)**:
+```mermaid
+graph TD
+    A[Incident Logged] --> B[Triage & Categorize]
+    B --> C[Assign to Group/Assignee]
+    C --> D[Investigation & Diagnosis]
+    D --> E{Workaround or Fix?}
+    E -->|Workaround| F[Temporary Resolution]
+    E -->|Fix| G[Implement Solution]
+    G --> H[Resolve Incident]
+    H --> I[User Verification]
+    I --> J[Closure]
+```
 
 #### Diagram Alur (Mermaid)
 ```mermaid
@@ -108,12 +121,12 @@ sequenceDiagram
   SN->>SN: Close Incident
 ```
 
-### Problem Management
+### 4.2 Problem Management
 - Tautkan **incident** berulang ke **problem**.
 - Root Cause Analysis (RCA) → gunakan *Known Error* base.
 - *Change* bisa dibuat dari *problem* untuk perbaikan permanen.
 
-### Change Enablement
+### 4.3 Change Enablement
 - Tipe: *Standard* (pre-approved), *Normal*, *Emergency*.
 - Workflow: *Plan → Assess → Approve (CAB) → Implement → Review → Close*.
 - Integrasi kalender rilis & blackout windows.
@@ -141,9 +154,25 @@ flowchart LR
   REV --> CL[Close Change]
 ```
 
+#### Diagram Alur (Mermaid)
+```mermaid
+flowchart LR
+  A[Plan Change] --> B[Assess Impact & Risk]
+  B --> C[Submit CAB Approval]
+  C --> D{Disetujui?}
+  D -->|Tidak| E[Revisi / Tolak]
+  D -->|Ya| F[Implementasi]
+  F --> G[Review & Validate]
+  G --> H[Close Change]
+```
+
+- Tipe: *Standard* (pre-approved), *Normal*, *Emergency*.
+- Workflow: *Plan → Assess → Approve (CAB) → Implement → Review → Close*.
+- Integrasi kalender rilis & blackout windows.
+
 ## 5. ITOM (Pengantar)
 
-### CMDB & Discovery
+### 5.1 CMDB & Discovery
 - **CMDB**: sumber kebenaran CI (Configuration Item) & relasi.
 - **Discovery**: menemukan perangkat/aplikasi (via MID Server).
 - Atur **Identification & Reconciliation** untuk mencegah duplikasi.
@@ -166,21 +195,49 @@ flowchart LR
   CMDB --> REL[CI Relationships]
 ```
 
-### Event Management
+### 5.2 Event Management
 - Konsumsi event dari tool monitoring → buat alert → korelasi → *auto-ticketing* opsional.
 - Gunakan *alert aggregation* untuk mengurangi noise.
 
+#### Diagram CMDB & Discovery (Mermaid)
+```mermaid
+flowchart TD
+  A[Device / Server] --> B[Discovery Probe]
+  B --> C[MID Server]
+  C --> D[ServiceNow Discovery]
+  D --> E[Identification and Reconciliation]
+  E --> F[CMDB - Configuration Item]
+  F --> G[Relationships]
+```
+
+#### Sequence Diagram Notifikasi P1/P2 (Mermaid)
+```mermaid
+sequenceDiagram
+  participant User
+  participant ServiceNow
+  participant Oncall
+  participant Manager
+
+  User->>ServiceNow: Create Incident (P1/P2)
+  ServiceNow->>Oncall: Notify via Email/SMS
+  ServiceNow->>Manager: Notify Major Incident Channel
+  Oncall-->>ServiceNow: Acknowledge Assignment
+  ServiceNow->>User: Update Work Notes & Status
+```
+
+
 ## 6. Integrasi & Otomasi
 
-### REST API & Scripted REST
+### 6.1 REST API & Scripted REST
 - **REST Table API**: CRUD terhadap tabel (contoh: `incident`).
 - **Scripted REST**: endpoint kustom (logika validasi/transformasi).
 - Contoh *curl* sederhana:
   ```bash
-  curl -u user:pass     "https://<instance>.service-now.com/api/now/table/incident?sysparm_limit=1"
+  curl -u user:pass \
+    "https://<instance>.service-now.com/api/now/table/incident?sysparm_limit=1"
   ```
 
-### Flow Designer
+### 6.2 Flow Designer
 - Otomasi berbasis *low-code*.
 - Flow = trigger + action.
 - Contoh: otomatis assign incident dengan kategori tertentu ke group support.
@@ -188,17 +245,17 @@ flowchart LR
 #### Diagram Arsitektur Flow (Mermaid)
 ```mermaid
 flowchart TD
-  TRG[Trigger: Record Created/Updated] --> COND{Match Conditions?}
+  TRG[Trigger: Record Created or Updated] --> COND{Match Conditions?}
   COND -->|No| END1[Do Nothing]
   COND -->|Yes| ACT[Actions]
-  ACT --> LUP[Lookup CI/Service]
+  ACT --> LUP[Lookup CI or Service]
   LUP --> DEC{Priority High?}
   DEC -->|Yes| ASSIGN[Set Assignment Group]
   DEC -->|No| TAG[Add Work Notes]
   ASSIGN --> SUBF[Call Subflow Notify]
   TAG --> SUBF
   SUBF --> ERR{Error?}
-  ERR -->|Yes| HNDL[Error Handler: Rollback/Log]
+  ERR -->|Yes| HNDL[Error Handler: Rollback or Log]
   ERR -->|No| DONE[Flow Complete]
 ```
 
@@ -210,6 +267,20 @@ Then    : set assignment_group = "Network Support"
           add work_notes = "Auto-assigned by Flow Designer"
           call subflow "Notify-Oncall"
 ```
+
+#### Diagram Flow Designer (Mermaid)
+```mermaid
+flowchart TD
+  A[Trigger: Incident Created] --> B{Category == Network?}
+  B -->|Ya| C[Action: Assign to Network Support Group]
+  B -->|Tidak| D[Action: Assign to Default Group]
+  C --> E[End]
+  D --> E[End]
+```
+
+- Otomasi berbasis *low-code*.
+- Flow = trigger + action.
+- Contoh: otomatis assign incident dengan kategori tertentu ke group support.
 
 ## 7. Development di ServiceNow
 - ServiceNow Studio
@@ -260,7 +331,99 @@ Then    : set assignment_group = "Network Support"
 ## 14. Glosarium
 - Kumpulan istilah ServiceNow umum (Record, CI, SLA, CAB, dll)
 
-## 15. Governance & Compliance
+## 15. Referensi
+- [ServiceNow Docs](https://docs.servicenow.com/)
+- [Developer Portal](https://developer.servicenow.com/)
+- [Community](https://www.servicenow.com/community.html)
+- Training & sertifikasi
+
+---
+
+## 16. Governance & Compliance
+
+> Ringkasan panduan menerapkan tata kelola dan kepatuhan menggunakan ServiceNow sebagai enabler. Fokus: **TOGAF**, **COBIT**, **ISO/IEC 27001**, dan **PDP (UU 27/2022 Indonesia)**.
+
+### 16.1 Prinsip Umum & Peran
+- **Prinsip**: *accountability, traceability, least privilege, privacy-by-design, defense-in-depth*.
+- **Peran Kunci** (contoh RACI ringkas):
+  | Aktivitas | Pemilik (R) | Akuntabel (A) | Dikonsultasikan (C) | Diberi Info (I) |
+  |---|---|---|---|---|
+  | Kebijakan Keamanan & Privasi | Security Lead | CISO/CTO | Legal, DPO | Seluruh tim |
+  | Arsitektur Enterprise | Lead Architect | CIO/CTO | Product Owners | Engineer |
+  | CMDB Governance | Service Owner | IT Ops Head | Security, Audit | Support |
+  | Change/CAB | Change Manager | IT Director | Service Owner, Security | Users |
+  | Audit & Evidence | Compliance | CISO | System Owners | All |
+
+#### Diagram Tata Kelola (Mermaid)
+```mermaid
+flowchart LR
+  POL[Kebijakan & Standar] --> CTRL[Kontrol & Prosedur]
+  CTRL --> TOOL[Implementasi di ServiceNow]
+  TOOL --> EVD[Evidence & Log]
+  EVD --> AUDIT[Pemeriksaan/Audit]
+  AUDIT --> IMPROVE[Perbaikan Berkelanjutan]
+  IMPROVE --> POL
+```
+
+---
+
+### 16.2 TOGAF (Enterprise Architecture)
+**Mapping ADMxServiceNow**:
+- **Preliminary/Architecture Vision** → *Demand/Intake* di ServiceNow; dokumentasikan *business drivers* & *principles* di **Knowledge** atau **Architecture Review Board (ARB) record**.
+- **Business/Information Systems/Technology Architecture** → simpan *baseline & target* di **Design records**, **Diagram (link repo)**; **CMDB** sebagai katalog *current state*.
+- **Opportunities & Solutions** → kelola *epic/initiative* via **Demand/Project**; *solution record* mengacu ke CI/Service di CMDB.
+- **Migration Planning** → **Change Enablement** untuk gelombang rilis; gunakan **blackout windows** & **maintenance schedule**.
+- **Implementation Governance** → **CAB/ARB workflow** di Change; *policy checks* via **Flow Designer** (gate otomatis).
+- **Architecture Change Management** → ridefinisi CI/Service, *tech debt*, dan *standards exception* sebagai **Problem/Task**.
+
+**Artefak yang disarankan di ServiceNow**:
+- Template **Architecture Decision Record (ADR)**.
+- Katalog **Standar & Referensi** (platform, data, integrasi) di Knowledge.
+- **Register Exception/Dispensation** dengan tanggal kadaluarsa.
+
+---
+
+### 16.3 COBIT (Governance of Enterprise IT)
+**Kontrol Kunci & Implementasi di ServiceNow** (contoh ringkas):
+- **APO (Align, Plan and Organize)**: *APO01 Governance Framework* → dokumentasi kebijakan di Knowledge; *policy acknowledgment* via Survey/Task.
+- **BAI (Build, Acquire and Implement)**: *BAI06 Changes* → **Change Enablement** + **CAB**; *BAI09 Asset Management* → **CMDB & SAM**.
+- **DSS (Deliver, Service and Support)**: *DSS02 Service Requests & Incidents* → **ITSM**; *DSS05 Security Services* → **SecOps/IR** jika tersedia.
+- **MEA (Monitor, Evaluate and Assess)**: *MEA01 Performance* → **SLAs/PA**; *MEA03 Compliance* → **Audit Task & Evidence**.
+
+**Checklist COBIT-ready untuk ServiceNow**:
+- [ ] Semua layanan memiliki **Service Owner** dan **CI** di CMDB.
+- [ ] Perubahan hanya melalui **Change** (Standard/Normal/Emergency) dan **CAB** terdokumentasi.
+- [ ] **Runbook** tersedia di Knowledge & dilink ke CI.
+- [ ] **SLA** untuk incident/request terukur & direview bulanan.
+- [ ] **Evidence** otomatis: notifikasi, approval log, work notes (read-only).
+
+---
+
+### 16.4 ISO/IEC 27001 (ISMS)
+**Kesenjangan umum** & cara menutupnya dengan ServiceNow:
+- **Konteks & Risiko (Clauses 4–6)** → modul **Risk** atau gunakan **Problem** sebagai risk register sederhana; lampirkan *risk treatment*.
+- **Support & Operation (7–8)** → *awareness* via Knowledge/Survey; prosedur operasional dalam **Catalog/KB**.
+- **Performance Evaluation (9)** → **Performance Analytics** untuk KPI ISMS; **Audit task** untuk internal audit.
+- **Improvement (10)** → *nonconformities* dicatat sebagai **Problem** atau **Defect**.
+
+**Annex A controls – contoh implementasi cepat**:
+- **A.5 Policies** → repositori kebijakan di Knowledge, *versioned*.
+- **A.6 Roles & Responsibilities** → RACI di atas + **assignment group**.
+- **A.8 Asset Management** → **CMDB** lengkap dengan klasifikasi & pemilik.
+- **A.9 Access Control** → **ACL** & role review periodik (task berkala).
+- **A.12 Operations Security** → *change control*, *backup/restore* sebagai **Standard Change**.
+- **A.16 Incident Management** → proses 4.1 + *major incident* sequence.
+- **A.18 Compliance** → **evidence register** (lihat bawah).
+
+**Evidence yang mudah diambil dari ServiceNow**:
+- Log **approval** di Change/Request.
+- **Work notes** & **history** untuk Incident/Problem.
+- **Audit trail** pada record (sys\_history, sys\_audit).
+- **SLA results** dan **PA scorecards**.
+
+---
+
+### 16.5 PDP (UU Pelindungan Data Pribadi – Indonesia)
 **Prinsip & Penerapan**:
 - **Lawful Basis & Consent** → rekam *consent/reference* pada **Contact/User**; simpan bukti persetujuan di Attachment/KB.
 - **Purpose Limitation** → kategorikan **Catalog/Workflow** berdasarkan tujuan pemrosesan; batasi *data fields* di form.
@@ -270,62 +433,63 @@ Then    : set assignment_group = "Network Support"
 - **Integrity & Confidentiality** → **ACL/Role** ketat untuk data sensitif; *encryption at rest/in transit* pada platform.
 - **Accountability** → **DPO tasks** dan **Breach workflow** sebagai Standard Change/Emergency.
 
-
 **Hak Subjek Data (DSAR) – alur singkat**:
 ```mermaid
 flowchart TD
-RQ[Permintaan Akses/Perbaikan/Penghapusan] --> VER[Verifikasi Identitas]
-VER --> LOC[Cari Data terkait (User/CI/Records)]
-LOC --> REV[Review Legal & DPO]
-REV --> ACT{Disetujui?}
-ACT -->|Ya| FUL[Fulfillment: Export/Rectify/Delete]
-ACT -->|Tidak| DEN[Penolakan beralasan]
-FUL --> LOG[Catat Evidence]
-DEN --> LOG
+  RQ[Permintaan Akses/Perbaikan/Penghapusan]
+  VER[Verifikasi Identitas]
+  LOC[Cari Data terkait: User/CI/Records]
+  REV[Review Legal & DPO]
+  ACT{Disetujui?}
+  FUL[Fulfillment: Export / Rectify / Delete]
+  DEN[Penolakan beralasan]
+  LOG[Catat Evidence]
+
+  RQ --> VER
+  VER --> LOC
+  LOC --> REV
+  REV --> ACT
+  ACT -->|Ya| FUL
+  ACT -->|Tidak| DEN
+  FUL --> LOG
+  DEN --> LOG
 ```
 
-
 **Register Data Processing** (contoh tabel):
-
 
 | Proses | Dasar Hukum | Kategori Data | Pemilik | Retensi | Lokasi | Catatan |
 |---|---|---|---|---|---|---|
 | Request Onboarding | Persetujuan | Identitas, Kontak | HR | 24 bln | Prod | Masking email opsional |
 | Support Ticket | Kepentingan sah | Identitas minimal | Support | 12 bln | Prod | Redaksi data sensitif |
 
-
 ---
 
-
-### 15.6 CMDB Governance (Lintas Framework)
+### 16.6 CMDB Governance (Lintas Framework)
 - **Klasifikasi Data/CI**: *Public, Internal, Confidential, Restricted* → field pada CI & *data class* pada attachment.
 - **Attestation** berkala: task otomatis ke **Service Owner** untuk konfirmasi CI.
 - **Kualitas Data**: metrik *completeness, correctness, compliance* → Scorecard PA.
 - **Lifecycle**: *propose → approve → implement → review → retire* melalui Change + task ops.
 
-
-### 15.7 Change & Release Governance
+### 16.7 Change & Release Governance
 - **Standarisasi Standard Change** dengan *templat, pre-checks, otomatis approval*.
 - **Normal/Emergency**: wajib *risk assessment* & **security review** (gate di Flow Designer).
 - **Calendar**: *freeze window*, *blackout*, & *change collision detection*.
 
-
-### 15.8 Metrik & Pelaporan
+### 16.8 Metrik & Pelaporan
 - **Governance KPIs**: % CI ter-attest, % perubahan tanpa CAB, waktu siklus Change, % SLA terpenuhi, jumlah DSAR selesai < 30 hari.
 - **Audit Dashboards**: *open findings*, *control coverage*, *evidence freshness*.
 
-
-### 15.9 Template & Artefak
+### 16.9 Template & Artefak
 - **ADR.md** – Architecture Decision Record.
 - **CAB-Minutes.md** – Notulen CAB.
 - **Policy-Access-Control.md** – Role/ACL & review periodik.
 - **DPIA-Template.md** – Data Protection Impact Assessment.
 - **Evidence-Register.csv** – daftar bukti dengan link record.
-  
-## 16. Referensi
+
+> Praktik terbaik: mulai minimal, otomatisasi *evidence* sejak awal, dan jadwalkan *quarterly governance review*.
+
+
 - [ServiceNow Docs](https://docs.servicenow.com/)
 - [Developer Portal](https://developer.servicenow.com/)
 - [Community](https://www.servicenow.com/community.html)
 - Training & sertifikasi
-
-

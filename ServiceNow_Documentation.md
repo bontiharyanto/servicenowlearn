@@ -3,28 +3,28 @@
 > Catatan belajar & implementasi ServiceNow. Gunakan sebagai living document—update seiring progres.
 
 ## Daftar Isi
-1. Pendahuluan  
-2. Getting Started  
-3. Konsep Dasar & Terminologi  
-4. ITSM  
-   - Incident Management  
-   - Problem Management  
-   - Change Enablement  
-5. ITOM (Pengantar)  
-   - CMDB & Discovery  
-   - Event Management  
-6. Integrasi & Otomasi  
-   - REST API & Scripted REST  
-   - Flow Designer  
-7. Development di ServiceNow  
-8. Service Catalog & Request Fulfillment  
-9. Reporting & Dashboard  
-10. Keamanan & Akses  
-11. Deployment & Migrasi  
-12. Praktik Terbaik  
-13. Runbook Ringkas  
-14. Glosarium  
-15. Referensi  
+- [1. Pendahuluan](#1-pendahuluan)
+- [2. Getting Started](#2-getting-started)
+- [3. Konsep Dasar & Terminologi](#3-konsep-dasar--terminologi)
+- [4. ITSM](#4-itsm)
+  - [Incident Management](#incident-management)
+  - [Problem Management](#problem-management)
+  - [Change Enablement](#change-enablement)
+- [5. ITOM (Pengantar)](#5-itom-pengantar)
+  - [CMDB & Discovery](#cmdb--discovery)
+  - [Event Management](#event-management)
+- [6. Integrasi & Otomasi](#6-integrasi--otomasi)
+  - [REST API & Scripted REST](#rest-api--scripted-rest)
+  - [Flow Designer](#flow-designer)
+- [7. Development di ServiceNow](#7-development-di-servicenow)
+- [8. Service Catalog & Request Fulfillment](#8-service-catalog--request-fulfillment)
+- [9. Reporting & Dashboard](#9-reporting--dashboard)
+- [10. Keamanan & Akses](#10-keamanan--akses)
+- [11. Deployment & Migrasi](#11-deployment--migrasi)
+- [12. Praktik Terbaik](#12-praktik-terbaik)
+- [13. Runbook Ringkas](#13-runbook-ringkas)
+- [14. Glosarium](#14-glosarium)
+- [15. Referensi](#15-referensi)
 
 ---
 

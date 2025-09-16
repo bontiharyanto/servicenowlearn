@@ -1,15 +1,31 @@
-# ServiceNow Learn
+# ServiceNow Learn 📘
 
-Repositori ini berisi **catatan belajar dan implementasi ServiceNow**: konsep dasar, praktik terbaik, arsitektur, serta snippet integrasi.  
-Cocok sebagai dokumentasi pribadi/team saat eksplorasi modul-modul ServiceNow (ITSM, ITOM, dsb).
+Repository ini berisi catatan belajar, eksperimen, dan dokumentasi seputar **ServiceNow**.  
+Tujuan repo ini adalah menjadi *living documentation* agar mudah dipakai ulang, diupdate, dan dishare.
 
-## 📦 Struktur
-- `ServiceNow_Documentation.md` — Dokumen utama (panduan, best practice, catatan teknis)
-- `itom-architecture.svg` — Diagram arsitektur ITOM
-- `docs/` — (opsional) Berkas tambahan: runbook, SOP, dan diagram lain
+---
 
-## 🚀 Mulai Cepat
-```bash
-git clone https://github.com/bontiharyanto/servicenowlearn.git
-cd servicenowlearn
-open ServiceNow_Documentation.md
+## 📑 Isi Utama
+- [ServiceNow_Documentation.md](ServiceNow_Documentation.md) → dokumentasi utama (ITSM, ITOM, integrasi, flow, dsb)
+- Contoh kode snippet (GlideRecord, Script Include, REST API, dll)
+- Diagram alur (Mermaid) untuk Incident, Change, Flow Designer, CMDB & Discovery
+
+---
+
+## 🚀 Fitur dalam Dokumentasi
+- **ITSM**: Incident, Problem, Change Management dengan diagram alur
+- **ITOM**: CMDB, Discovery, Event Management
+- **Integrasi & Otomasi**: REST API, Scripted REST, Flow Designer
+- **Development**: Script Include, Glide API, Studio
+- **Service Catalog**: Catalog Item, Variable Sets, Record Producer
+- **Dashboard & Reporting**
+- **Keamanan & Akses**
+- **Best Practices**: Naming convention, performance tuning, update set & release management
+
+---
+
+## 🛠️ Cara Menggunakan
+1. Clone repo:
+   ```bash
+   git clone https://github.com/bontiharyanto/servicenowlearn.git
+   cd servicenowlearn

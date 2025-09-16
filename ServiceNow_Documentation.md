@@ -438,10 +438,64 @@ SN --> Data[Data Lake or BI]
 - API & integrasi eksternal
 
 ## 8. Service Catalog & Request Fulfillment
-- Membuat catalog item
-- Variabel & variable sets
-- Record producer
-- Workflow request approval
+
+
+### 8.11 Kinerja dan Metrik
+- Time to approve, time to fulfill, _first pass yield_, dan _reopen rate_.
+- Gunakan **Performance Analytics** untuk tren backlog RITM dan waktu siklus.
+
+
+### 8.12 Script Contoh
+**Client Script (onChange)**
+```javascript
+function onChange(control, oldValue, newValue, isLoading) {
+if (isLoading) return;
+if (g_form.getValue('u_need_admin_access') == 'true') {
+g_form.setMandatory('u_justification', true);
+}
+}
+```
+
+
+**UI Policy Action**
+```text
+Condition: u_need_admin_access == true
+Actions : show u_justification, make mandatory
+```
+
+
+### 8.13 Diagram Lifecycle Request
+```mermaid
+flowchart LR
+A[User submits item] --> B[REQ created]
+B --> C[RITM created]
+C --> D{Approval required?}
+D -->|Yes| APPR[Approval]
+D -->|No| E[SCTASK created]
+APPR -->|Approved| E
+APPR -->|Rejected| RJ[Close RITM rejected]
+E --> F[Fulfillment in progress]
+F --> G[Complete tasks]
+G --> H[Close RITM]
+H --> I[Close REQ]
+```
+
+
+### 8.14 Keputusan Desain Cepat
+| Kebutuhan | Gunakan |
+|---|---|
+| Formulir sederhana ke tabel target | **Record Producer** |
+| Layanan berulang dengan approval dan tasks | **Catalog Item** + **Flow** |
+| Bundle beberapa item | **Order Guide** |
+| Validasi kompleks dan interop API | **Flow** + **Action** / **Scripted REST** |
+
+
+### 8.15 Checklist Kesiapan Go-Live
+- [ ] Owner item ditetapkan dan artikel KB tersedia.
+- [ ] Approval path teruji, termasuk eskalasi.
+- [ ] Tasks dan assignment group jelas, ada template runbook.
+- [ ] SLA disetel pada RITM/REQ jika relevan.
+- [ ] Metode uji dan rollback terdokumentasi.
 
 ## 9. Reporting & Dashboard
 - Membuat laporan dasar

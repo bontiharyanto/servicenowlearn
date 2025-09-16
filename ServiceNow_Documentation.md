@@ -376,14 +376,45 @@ flowchart LR
   C --> F[Update work notes]
   E --> F
 ```
+### 6.14 Checklist implementasi aman
+- [ ] Semua kredensial menggunakan alias dan terenkripsi.
+- [ ] Limitasi field pada REST Table API.
+- [ ] Validasi skema pada Scripted REST.
+- [ ] Idempotensi berbasis request id.
+- [ ] Retry policy dan dead letter queue.
+- [ ] Dashboard PA untuk metrik kegagalan dan waktu siklus.
 
+
+### 6.15 Arsitektur Integrasi Tingkat Tinggi
+
+> Gambaran blok besar integrasi ServiceNow di organisasi.
+
+```mermaid
+flowchart LR
+U[Users and Requesters] --> Portal[Self Service Portal]
+Portal --> SN[ServiceNow Platform]
+SN --> ITSM[ITSM Modules]
+SN --> CMDB[CMDB]
+SN --> Flow[Flow Designer and IntegrationHub]
+Flow --> Slack[Slack or Teams]
+Flow --> Jira[Jira]
+Flow --> Email[SMTP Email]
+Flow --> Webhook[External Webhooks]
+SN --> API[REST and Scripted REST]
+API --> MID[MID Server]
+MID --> OnPrem[On Prem Systems]
+API --> SaaS[SaaS APIs]
+Monitor[Monitoring or APM] --> SN
+SN --> Data[Data Lake or BI]
+```
+**Catatan desain**: gunakan credential alias, idempotensi berbasis request id, retry policy, dan evidence otomatis (approval id, request id, payload hash).
 **Langkah implementasi singkat**
 1. Buat **Subflow** `Notify Oncall` yang memanggil Slack spoke.
 2. Buat **Action** Jira Create Issue; simpan `jira_key` di field referensi.
 3. Di **Flow**, pasang trigger `Incident updated` dengan kondisi `priority == 1`.
 4. Tambah **error handler** untuk retry dan logging.
 
-### 6.14 Checklist implementasi aman
+### 6.16 Checklist implementasi aman
 - [ ] Semua kredensial menggunakan alias dan terenkripsi.
 - [ ] Limitasi field pada REST Table API.
 - [ ] Validasi skema pada Scripted REST.

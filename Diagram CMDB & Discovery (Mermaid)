@@ -194,8 +194,6 @@ flowchart LR
   CMDB --> QRY[Queries / Reports]
   CMDB --> REL[CI Relationships]
 
-  note right of IDR: Cegah duplikasi
-  note right of CMDB: SSoT untuk CI & relasi
 ```
 
 ### 5.2 Event Management
@@ -255,9 +253,9 @@ flowchart TD
   LUP --> DEC{Priority High?}
   DEC -->|Yes| ASSIGN[Set Assignment Group]
   DEC -->|No| TAG[Add Work Notes]
-  ASSIGN --> SUBF[Call Subflow (Notify)]
+  ASSIGN --> SUBF[Call Subflow Notify]
   TAG --> SUBF
-  SUBF --> ERR{Error?}
+  SUBF --> SUBF[Call Subflow Notify]
   ERR -->|Yes| HNDL[Error Handler: Rollback/Log]
   ERR -->|No| DONE[Flow Complete]
 ```

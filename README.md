@@ -1,25 +1,15 @@
 # ServiceNow Learn
 
-Repository ini dibuat untuk **belajar dan dokumentasi implementasi ServiceNow**.  
-Berisi catatan, diagram, dan file terkait proses pembelajaran serta best practice dalam penggunaan ServiceNow.
+Repositori ini berisi **catatan belajar dan implementasi ServiceNow**: konsep dasar, praktik terbaik, arsitektur, serta snippet integrasi.  
+Cocok sebagai dokumentasi pribadi/tiim saat eksplorasi modul-modul ServiceNow (ITSM, ITOM, dsb).
 
----
+## 📦 Struktur
+- `ServiceNow_Documentation.md` — Dokumen utama (panduan, best practice, catatan teknis)
+- `itom-architecture.svg` — Diagram arsitektur ITOM
+- `docs/` — (opsional) Berkas tambahan: runbook, SOP, dan diagram lain
 
-## 📚 Konten Repository
-- `ServiceNow_Documentation.md` → Dokumentasi catatan pembelajaran.
-- `itom-architecture.svg` → Diagram arsitektur ITOM (IT Operations Management).
-- Folder tambahan (jika ada) → Contoh implementasi / modul terkait.
-
----
-
-## 🎯 Tujuan
-- Memahami dasar-dasar ServiceNow.
-- Mengetahui arsitektur dan modul ITOM.
-- Menyimpan referensi & dokumentasi untuk implementasi.
-
----
-
-## 🚀 Cara Menggunakan
-1. Clone repository ini:
-   ```bash
-   git clone https://github.com/bontiharyanto/servicenowlearn.git
+## 🚀 Mulai Cepat
+```bash
+git clone https://github.com/bontiharyanto/servicenowlearn.git
+cd servicenowlearn
+open ServiceNow_Documentation.md

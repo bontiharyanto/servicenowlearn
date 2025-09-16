@@ -1,7 +1,7 @@
 # ServiceNow Learn
 
 Repositori ini berisi **catatan belajar dan implementasi ServiceNow**: konsep dasar, praktik terbaik, arsitektur, serta snippet integrasi.  
-Cocok sebagai dokumentasi pribadi/tiim saat eksplorasi modul-modul ServiceNow (ITSM, ITOM, dsb).
+Cocok sebagai dokumentasi pribadi/team saat eksplorasi modul-modul ServiceNow (ITSM, ITOM, dsb).
 
 ## 📦 Struktur
 - `ServiceNow_Documentation.md` — Dokumen utama (panduan, best practice, catatan teknis)

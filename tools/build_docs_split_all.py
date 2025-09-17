@@ -112,7 +112,8 @@ PAGE = Template(r'''<!doctype html>
 
     // Render MD -> HTML + Mermaid
     const raw = document.getElementById('mdsrc').textContent;
-    const mermaidified = raw.replace(/```mermaid([\s\S]*?)```/g, (m, code) => `<div class="mermaid">\\${code.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>`);
+    #const mermaidified = raw.replace(/```mermaid([\s\S]*?)```/g, (m, code) => `<div class="mermaid">\\${code.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>`);
+    const mermaidified = raw.replace(/```mermaid([\s\S]*?)```/g, (m, code) => `<div class="mermaid">$${code.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>`);
     const html = DOMPurify.sanitize(marked.parse(mermaidified, { mangle:false, headerIds:false, breaks:true }));
     const body = document.getElementById('docBody'); body.innerHTML = html;
 

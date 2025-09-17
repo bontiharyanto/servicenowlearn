@@ -61,7 +61,7 @@ Dokumen ini merangkum pembelajaran ServiceNow untuk skenario umum: ITSM, ITOM, d
 - Template incident untuk kasus berulang.
 - SLAs: *response* & *resolution* berbasis prioritas.
 
-**Diagram Alur Incident Management (Mermaid)**:
+**Diagram Alur Incident Management**:
 ```mermaid
 graph TD
     A[Incident Logged] --> B[Triage & Categorize]
@@ -75,7 +75,7 @@ graph TD
     I --> J[Closure]
 ```
 
-#### Diagram Alur (Mermaid)
+#### Diagram Alur
 ```mermaid
 flowchart TD
   A[User melapor masalah] --> B{Channel?}
@@ -97,7 +97,7 @@ flowchart TD
   M --> N[Close: Closure Code/Notes]
 ```
 
-#### Sequence Notifikasi P1/P2 (Mermaid)
+#### Sequence Notifikasi P1/P2
 ```mermaid
 sequenceDiagram
   participant U as User/Monitoring
@@ -131,7 +131,7 @@ sequenceDiagram
 - Workflow: *Plan → Assess → Approve (CAB) → Implement → Review → Close*.
 - Integrasi kalender rilis & blackout windows.
 
-#### Diagram Alur (Mermaid)
+#### Diagram Alur
 ```mermaid
 flowchart LR
   I[Intake / Request for Change] --> C[Create Change Record]
@@ -154,7 +154,7 @@ flowchart LR
   REV --> CL[Close Change]
 ```
 
-#### Diagram Alur (Mermaid)
+#### Diagram Alur
 ```mermaid
 flowchart LR
   A[Plan Change] --> B[Assess Impact & Risk]
@@ -178,7 +178,7 @@ flowchart LR
 - Atur **Identification & Reconciliation** untuk mencegah duplikasi.
 - Kualitas CMDB: ukur dengan *completeness, correctness, compliance*.
 
-#### Diagram CMDB & Discovery (Mermaid)
+#### Diagram CMDB & Discovery
 ```mermaid
 flowchart LR
   subgraph Network
@@ -200,7 +200,7 @@ flowchart LR
 - Konsumsi event dari tool monitoring → buat alert → korelasi → *auto-ticketing* opsional.
 - Gunakan *alert aggregation* untuk mengurangi noise.
 
-#### Diagram CMDB & Discovery (Mermaid)
+#### Diagram CMDB & Discovery
 ```mermaid
 flowchart TD
   A[Device / Server] --> B[Discovery Probe]
@@ -211,7 +211,7 @@ flowchart TD
   F --> G[Relationships]
 ```
 
-#### Sequence Diagram Notifikasi P1/P2 (Mermaid)
+#### Sequence Diagram Notifikasi P1/P2
 ```mermaid
 sequenceDiagram
   participant User

@@ -45,9 +45,9 @@
 
   <div id="overlay" class="fixed inset-0 z-40 hidden bg-black/40 md:hidden"></div>
 
-  <div class="mx-auto grid max-w-7xl grid-cols-1 md:grid-cols-[280px_minmax(0,1fr)]">
+  <div class="mx-auto grid max-w-7xl grid-cols-1 md:grid-cols-[300px_minmax(0,1fr)]"><aside id="drawer">
     <!-- Sidebar -->
-    <aside id="drawer" class="drawer-enter fixed left-0 top-0 z-50 h-full w-72 overflow-y-auto border-r bg-white p-4 transition-transform md:static md:drawer-open">
+    <aside id="drawer" class="drawer-enter fixed left-0 top-0 z-50 h-full w-72 overflow-y-auto border-r bg-white p-4 transition-transform md:drawer-open md:sticky md:top-[56px] md:h-[calc(100vh-56px)] md:w-[300px]">
       <div class="mb-4 flex items-center justify-between md:hidden">
         <span class="font-semibold">Menu</span>
         <button id="btnClose" class="rounded-lg p-2 hover:bg-slate-100" aria-label="Close menu"><i data-lucide="x" class="h-5 w-5"></i></button>
@@ -169,9 +169,25 @@ SN --> Data[Data Lake or BI]
 
     // Render MD -> HTML + Mermaid
     const raw = document.getElementById('mdsrc').textContent;
-    const mermaidified = raw.replace(/```mermaid([\s\S]*?)```/g, function(m, code) {
-    return '<div class="mermaid">' + code.replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</div>';
+    
+    // MERMAID SANITIZER: ubah karakter non-ASCII & artefak yang sering bikin error
+    const mermaidified = raw.replace(/```mermaid([\s\S]*?)```/g, function(m, code) {let fixed = code
+    .replace(/\u2192/g, '-->')        // “→” jadi “-->”
+    .replace(/[–—]/g, '-')            // en/em dash jadi hyphen
+    .replace(/\r/g, '')               // CRLF -> LF
+    .replace(/^\s*%%.*$/gm, '')       // buang komentar gaya Mermaid
+    .replace(/[^\S\r\n]+$/gm, '')     // trim trailing spaces per line
+    // perapihan “artefak lama” yang sering kebawa dari contoh sebelumnya:
+    .replace(/\]\s*TAG.*/g, ']')      // “] TAG …” -> “]”
+    .trim();
+
+    // Escape < > agar aman (DOMPurify tetap dipakai setelah ini)
+    fixed = fixed.replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    return '<div class="mermaid">' + fixed + '</div>';
     });
+
+    
+    
     const html = DOMPurify.sanitize(marked.parse(mermaidified, { mangle:false, headerIds:false, breaks:true }));
     const body = document.getElementById('docBody'); body.innerHTML = html;
 

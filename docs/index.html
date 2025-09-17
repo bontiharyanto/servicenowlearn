@@ -100,7 +100,8 @@
   <script>
     // ====== Config: path ke file Markdown (bisa diberi query ?md=path) ======
     const urlParams = new URLSearchParams(location.search);
-    const MD_PATH = urlParams.get('md') || 'ServiceNow_Documentation.md';
+    const MD_PATH = urlParams.get('md') || './ServiceNow_Documentation.md';
+
 
     document.getElementById('mdPathTxt').textContent = MD_PATH;
     document.getElementById('openMD').href = MD_PATH;
@@ -108,6 +109,17 @@
     // ====== Sidebar builder ======
     const nav = document.getElementById('nav');
     const sections = ['dashboard']; // dashboard always first
+
+    function renderDashboardOnly() {
+      nav.innerHTML = '';
+      const btn = document.createElement('button');
+      btn.className = 'nav-btn flex w-full items-center gap-3 rounded-xl px-3 py-2 text-left transition hover:bg-slate-100 active';
+      btn.innerHTML = '<i data-lucide="layout-dashboard" class="h-4 w-4"></i><span>Dashboard</span>';
+      btn.onclick = () => document.getElementById('dashboard').scrollIntoView({behavior:'smooth'});
+      nav.appendChild(btn);
+      lucide.createIcons();
+    }
+    renderDashboardOnly();
 
     function slugify(text) {
       return text.toLowerCase()
@@ -160,6 +172,8 @@
       buildNavFromHeadings(document.getElementById('docBody'), id);
       closeDrawer();
     }
+
+    
 
     // ====== Drawer handlers ======
     const drawer = document.getElementById('drawer');

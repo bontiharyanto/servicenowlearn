@@ -112,8 +112,9 @@ PAGE = Template(r'''<!doctype html>
 
     // Render MD -> HTML + Mermaid
     const raw = document.getElementById('mdsrc').textContent;
-    #const mermaidified = raw.replace(/```mermaid([\s\S]*?)```/g, (m, code) => `<div class="mermaid">\\${code.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>`);
-    const mermaidified = raw.replace(/```mermaid([\s\S]*?)```/g, (m, code) => `<div class="mermaid">$${code.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>`);
+    const mermaidified = raw.replace(/```mermaid([\s\S]*?)```/g, function(m, code) {
+    return '<div class="mermaid">' + code.replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</div>';
+    });
     const html = DOMPurify.sanitize(marked.parse(mermaidified, { mangle:false, headerIds:false, breaks:true }));
     const body = document.getElementById('docBody'); body.innerHTML = html;
 
@@ -213,7 +214,7 @@ def main():
         prev_dis = "" if idx > 0 else 'aria-disabled="true" tabindex="-1"'
         next_dis = "" if idx+1 < len(pages) else 'aria-disabled="true" tabindex="-1"'
         sidebar = build_sidebar(site, href)
-        html = PAGE.substitute(
+        html = PAGE.safe_substitute(
             title=title, site=args.title, sidebar=sidebar, md=md_fragment,
             prev_href=prev_href, next_href=next_href,
             prev_disabled=prev_dis, next_disabled=next_dis

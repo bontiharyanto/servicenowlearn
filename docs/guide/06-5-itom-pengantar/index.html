@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>6. 5. ITOM (Pengantar) - ServiceNow Docs</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.3/dist/purify.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+  <style>
+    .drawer-enter { transform: translateX(-100%); }
+    .drawer-open { transform: translateX(0); }
+    .prose :where(pre):not(:where(.not-prose *)) { background:#0f172a; color:#e2e8f0; padding:1rem; border-radius:.75rem; overflow:auto; }
+    .prose :where(code):not(:where(pre code,.not-prose *)){ background:#e2e8f0; padding:.15rem .35rem; border-radius:.35rem; }
+    .prose h2,.prose h3,.prose h4 { scroll-margin-top: 90px; }
+    .mini-toc a{ color:#475569; }
+    .mini-toc a:hover{ text-decoration:underline; }
+    .nav-link.active { background:#eef2ff; font-weight:600; }
+  </style>
+  <script>mermaid.initialize({ startOnLoad:false, theme:'default' });</script>
+</head>
+<body class="bg-slate-50 text-slate-900">
+  <!-- Topbar -->
+  <header class="sticky top-0 z-30 flex items-center justify-between gap-3 border-b bg-white px-4 py-3">
+    <div class="flex items-center gap-3">
+      <button id="btnOpen" class="md:hidden rounded-lg p-2 hover:bg-slate-100" aria-label="Open menu">
+        <i data-lucide="menu" class="h-5 w-5"></i>
+      </button>
+      <div class="flex items-center gap-2">
+        <i data-lucide="book-open" class="h-5 w-5"></i>
+        <h1 class="text-lg font-semibold">ServiceNow Docs</h1>
+      </div>
+    </div>
+    <div class="flex items-center gap-2 text-sm">
+      <a href="../index.html" class="rounded-md border px-3 py-1.5 hover:bg-slate-100 flex items-center gap-2">
+        <i data-lucide="layout-dashboard" class="h-4 w-4"></i> Dashboard
+      </a>
+      <a href="./index.html" class="rounded-md border px-3 py-1.5 hover:bg-slate-100 flex items-center gap-2">
+        <i data-lucide="book" class="h-4 w-4"></i> Dokumentasi
+      </a>
+    </div>
+  </header>
+
+  <div id="overlay" class="fixed inset-0 z-40 hidden bg-black/40 md:hidden"></div>
+
+  <div class="mx-auto grid max-w-7xl grid-cols-1 md:grid-cols-[280px_minmax(0,1fr)]">
+    <!-- Sidebar -->
+    <aside id="drawer" class="drawer-enter fixed left-0 top-0 z-50 h-full w-72 overflow-y-auto border-r bg-white p-4 transition-transform md:static md:drawer-open">
+      <div class="mb-4 flex items-center justify-between md:hidden">
+        <span class="font-semibold">Menu</span>
+        <button id="btnClose" class="rounded-lg p-2 hover:bg-slate-100" aria-label="Close menu"><i data-lucide="x" class="h-5 w-5"></i></button>
+      </div>
+      <nav id="nav" class="space-y-1 text-sm"><a class="nav-link flex w-full items-center gap-3 px-3 py-2 hover:bg-slate-100 rounded-lg" href="01-daftar-isi/index.html"><i data-lucide="book-open" class="h-4 w-4"></i><span>1. Daftar Isi</span></a>
+<a class="nav-link flex w-full items-center gap-3 px-3 py-2 hover:bg-slate-100 rounded-lg" href="02-1-pendahuluan/index.html"><i data-lucide="book-open" class="h-4 w-4"></i><span>2. 1. Pendahuluan</span></a>
+<a class="nav-link flex w-full items-center gap-3 px-3 py-2 hover:bg-slate-100 rounded-lg" href="03-2-getting-started/index.html"><i data-lucide="book-open" class="h-4 w-4"></i><span>3. 2. Getting Started</span></a>
+<a class="nav-link flex w-full items-center gap-3 px-3 py-2 hover:bg-slate-100 rounded-lg" href="04-3-konsep-dasar-terminologi/index.html"><i data-lucide="book-open" class="h-4 w-4"></i><span>4. 3. Konsep Dasar & Terminologi</span></a>
+<a class="nav-link flex w-full items-center gap-3 px-3 py-2 hover:bg-slate-100 rounded-lg" href="05-4-itsm/index.html"><i data-lucide="book-open" class="h-4 w-4"></i><span>5. 4. ITSM</span></a>
+<a class="nav-link ml-6 block rounded-lg px-3 py-1.5 hover:bg-slate-100" href="05-4-itsm/01-41-incident-management.html">5.1 4.1 Incident Management</a>
+<a class="nav-link ml-6 block rounded-lg px-3 py-1.5 hover:bg-slate-100" href="05-4-itsm/02-42-problem-management.html">5.2 4.2 Problem Management</a>
+<a class="nav-link ml-6 block rounded-lg px-3 py-1.5 hover:bg-slate-100" href="05-4-itsm/03-43-change-enablement.html">5.3 4.3 Change Enablement</a>
+<a class="nav-link flex w-full items-center gap-3 px-3 py-2 hover:bg-slate-100 rounded-lg" href="06-5-itom-pengantar/index.html" data-current="true"><i data-lucide="book-open" class="h-4 w-4"></i><span>6. 5. ITOM (Pengantar)</span></a>
+<a class="nav-link ml-6 block rounded-lg px-3 py-1.5 hover:bg-slate-100" href="06-5-itom-pengantar/01-51-cmdb-discovery.html">6.1 5.1 CMDB & Discovery</a>
+<a class="nav-link ml-6 block rounded-lg px-3 py-1.5 hover:bg-slate-100" href="06-5-itom-pengantar/02-52-event-management.html">6.2 5.2 Event Management</a>
+<a class="nav-link flex w-full items-center gap-3 px-3 py-2 hover:bg-slate-100 rounded-lg" href="07-6-integrasi-otomasi/index.html"><i data-lucide="book-open" class="h-4 w-4"></i><span>7. 6. Integrasi & Otomasi</span></a>
+<a class="nav-link ml-6 block rounded-lg px-3 py-1.5 hover:bg-slate-100" href="07-6-integrasi-otomasi/01-61-rest-table-api-inbound.html">7.1 6.1 REST Table API (Inbound)</a>
+<a class="nav-link ml-6 block rounded-lg px-3 py-1.5 hover:bg-slate-100" href="07-6-integrasi-otomasi/02-62-scripted-rest-api-inbound-kustom.html">7.2 6.2 Scripted REST API (Inbound kustom)</a>
+<a class="nav-link ml-6 block rounded-lg px-3 py-1.5 hover:bg-slate-100" href="07-6-integrasi-otomasi/03-63-outbound-rest-soap-dan-import-set.html">7.3 6.3 Outbound REST, SOAP, dan Import Set</a>
+<a class="nav-link ml-6 block rounded-lg px-3 py-1.5 hover:bg-slate-100" href="07-6-integrasi-otomasi/04-64-integrationhub-dan-spokes.html">7.4 6.4 IntegrationHub dan Spokes</a>
+<a class="nav-link ml-6 block rounded-lg px-3 py-1.5 hover:bg-slate-100" href="07-6-integrasi-otomasi/05-65-flow-designer-lanjutan.html">7.5 6.5 Flow Designer – lanjutan</a>
+<a class="nav-link ml-6 block rounded-lg px-3 py-1.5 hover:bg-slate-100" href="07-6-integrasi-otomasi/06-66-event-driven-dan-webhook.html">7.6 6.6 Event driven dan Webhook</a>
+<a class="nav-link ml-6 block rounded-lg px-3 py-1.5 hover:bg-slate-100" href="07-6-integrasi-otomasi/07-67-email-integration.html">7.7 6.7 Email integration</a>
+<a class="nav-link ml-6 block rounded-lg px-3 py-1.5 hover:bg-slate-100" href="07-6-integrasi-otomasi/08-68-mid-server-jdbc-file-dan-discovery.html">7.8 6.8 MID Server, JDBC, File, dan Discovery</a>
+<a class="nav-link ml-6 block rounded-lg px-3 py-1.5 hover:bg-slate-100" href="07-6-integrasi-otomasi/09-69-keamanan-dan-kredensial.html">7.9 6.9 Keamanan dan Kredensial</a>
+<a class="nav-link ml-6 block rounded-lg px-3 py-1.5 hover:bg-slate-100" href="07-6-integrasi-otomasi/10-610-error-handling-idempotensi-dan-retry.html">7.10 6.10 Error handling, Idempotensi, dan Retry</a>
+<a class="nav-link ml-6 block rounded-lg px-3 py-1.5 hover:bg-slate-100" href="07-6-integrasi-otomasi/11-611-observabilitas-dan-audit.html">7.11 6.11 Observabilitas dan Audit</a>
+<a class="nav-link ml-6 block rounded-lg px-3 py-1.5 hover:bg-slate-100" href="07-6-integrasi-otomasi/12-612-decision-matrix-integrasi.html">7.12 6.12 Decision Matrix Integrasi</a>
+<a class="nav-link ml-6 block rounded-lg px-3 py-1.5 hover:bg-slate-100" href="07-6-integrasi-otomasi/13-613-contoh-end-to-end-incident-to-slack-and-jira.html">7.13 6.13 Contoh end to end: Incident to Slack and Jira</a>
+<a class="nav-link ml-6 block rounded-lg px-3 py-1.5 hover:bg-slate-100" href="07-6-integrasi-otomasi/14-614-checklist-implementasi-aman.html">7.14 6.14 Checklist implementasi aman</a>
+<a class="nav-link ml-6 block rounded-lg px-3 py-1.5 hover:bg-slate-100" href="07-6-integrasi-otomasi/15-615-arsitektur-integrasi-tingkat-tinggi.html">7.15 6.15 Arsitektur Integrasi Tingkat Tinggi</a>
+<a class="nav-link ml-6 block rounded-lg px-3 py-1.5 hover:bg-slate-100" href="07-6-integrasi-otomasi/16-616-checklist-implementasi-aman.html">7.16 6.16 Checklist implementasi aman</a>
+<a class="nav-link flex w-full items-center gap-3 px-3 py-2 hover:bg-slate-100 rounded-lg" href="08-7-development-di-servicenow/index.html"><i data-lucide="book-open" class="h-4 w-4"></i><span>8. 7. Development di ServiceNow</span></a>
+<a class="nav-link flex w-full items-center gap-3 px-3 py-2 hover:bg-slate-100 rounded-lg" href="09-8-service-catalog-request-fulfillment/index.html"><i data-lucide="book-open" class="h-4 w-4"></i><span>9. 8. Service Catalog & Request Fulfillment</span></a>
+<a class="nav-link ml-6 block rounded-lg px-3 py-1.5 hover:bg-slate-100" href="09-8-service-catalog-request-fulfillment/01-811-kinerja-dan-metrik.html">9.1 8.11 Kinerja dan Metrik</a>
+<a class="nav-link ml-6 block rounded-lg px-3 py-1.5 hover:bg-slate-100" href="09-8-service-catalog-request-fulfillment/02-812-script-contoh.html">9.2 8.12 Script Contoh</a>
+<a class="nav-link ml-6 block rounded-lg px-3 py-1.5 hover:bg-slate-100" href="09-8-service-catalog-request-fulfillment/03-813-diagram-lifecycle-request.html">9.3 8.13 Diagram Lifecycle Request</a>
+<a class="nav-link ml-6 block rounded-lg px-3 py-1.5 hover:bg-slate-100" href="09-8-service-catalog-request-fulfillment/04-814-keputusan-desain-cepat.html">9.4 8.14 Keputusan Desain Cepat</a>
+<a class="nav-link ml-6 block rounded-lg px-3 py-1.5 hover:bg-slate-100" href="09-8-service-catalog-request-fulfillment/05-815-checklist-kesiapan-go-live.html">9.5 8.15 Checklist Kesiapan Go-Live</a>
+<a class="nav-link flex w-full items-center gap-3 px-3 py-2 hover:bg-slate-100 rounded-lg" href="10-9-reporting-dashboard/index.html"><i data-lucide="book-open" class="h-4 w-4"></i><span>10. 9. Reporting & Dashboard</span></a>
+<a class="nav-link flex w-full items-center gap-3 px-3 py-2 hover:bg-slate-100 rounded-lg" href="11-10-keamanan-akses/index.html"><i data-lucide="book-open" class="h-4 w-4"></i><span>11. 10. Keamanan & Akses</span></a>
+<a class="nav-link flex w-full items-center gap-3 px-3 py-2 hover:bg-slate-100 rounded-lg" href="12-11-deployment-migrasi/index.html"><i data-lucide="book-open" class="h-4 w-4"></i><span>12. 11. Deployment & Migrasi</span></a>
+<a class="nav-link flex w-full items-center gap-3 px-3 py-2 hover:bg-slate-100 rounded-lg" href="13-12-praktik-terbaik/index.html"><i data-lucide="book-open" class="h-4 w-4"></i><span>13. 12. Praktik Terbaik</span></a>
+<a class="nav-link flex w-full items-center gap-3 px-3 py-2 hover:bg-slate-100 rounded-lg" href="14-13-runbook-ringkas/index.html"><i data-lucide="book-open" class="h-4 w-4"></i><span>14. 13. Runbook Ringkas</span></a>
+<a class="nav-link flex w-full items-center gap-3 px-3 py-2 hover:bg-slate-100 rounded-lg" href="15-14-glosarium/index.html"><i data-lucide="book-open" class="h-4 w-4"></i><span>15. 14. Glosarium</span></a>
+<a class="nav-link flex w-full items-center gap-3 px-3 py-2 hover:bg-slate-100 rounded-lg" href="16-15-referensi/index.html"><i data-lucide="book-open" class="h-4 w-4"></i><span>16. 15. Referensi</span></a>
+<a class="nav-link flex w-full items-center gap-3 px-3 py-2 hover:bg-slate-100 rounded-lg" href="17-16-governance-compliance/index.html"><i data-lucide="book-open" class="h-4 w-4"></i><span>17. 16. Governance & Compliance</span></a>
+<a class="nav-link ml-6 block rounded-lg px-3 py-1.5 hover:bg-slate-100" href="17-16-governance-compliance/01-161-prinsip-umum-peran.html">17.1 16.1 Prinsip Umum & Peran</a>
+<a class="nav-link ml-6 block rounded-lg px-3 py-1.5 hover:bg-slate-100" href="17-16-governance-compliance/02-162-togaf-enterprise-architecture.html">17.2 16.2 TOGAF (Enterprise Architecture)</a>
+<a class="nav-link ml-6 block rounded-lg px-3 py-1.5 hover:bg-slate-100" href="17-16-governance-compliance/03-163-cobit-governance-of-enterprise-it.html">17.3 16.3 COBIT (Governance of Enterprise IT)</a>
+<a class="nav-link ml-6 block rounded-lg px-3 py-1.5 hover:bg-slate-100" href="17-16-governance-compliance/04-164-isoiec-27001-isms.html">17.4 16.4 ISO/IEC 27001 (ISMS)</a>
+<a class="nav-link ml-6 block rounded-lg px-3 py-1.5 hover:bg-slate-100" href="17-16-governance-compliance/05-165-pdp-uu-pelindungan-data-pribadi-indonesia.html">17.5 16.5 PDP (UU Pelindungan Data Pribadi – Indonesia)</a>
+<a class="nav-link ml-6 block rounded-lg px-3 py-1.5 hover:bg-slate-100" href="17-16-governance-compliance/06-166-cmdb-governance-lintas-framework.html">17.6 16.6 CMDB Governance (Lintas Framework)</a>
+<a class="nav-link ml-6 block rounded-lg px-3 py-1.5 hover:bg-slate-100" href="17-16-governance-compliance/07-167-change-release-governance.html">17.7 16.7 Change & Release Governance</a>
+<a class="nav-link ml-6 block rounded-lg px-3 py-1.5 hover:bg-slate-100" href="17-16-governance-compliance/08-168-metrik-pelaporan.html">17.8 16.8 Metrik & Pelaporan</a>
+<a class="nav-link ml-6 block rounded-lg px-3 py-1.5 hover:bg-slate-100" href="17-16-governance-compliance/09-169-template-artefak.html">17.9 16.9 Template & Artefak</a></nav>
+    </aside>
+
+    <!-- Main -->
+    <main class="p-4 md:p-6">
+      <article class="prose max-w-none">
+        <h2 class="mb-2 text-2xl font-bold">6. 5. ITOM (Pengantar)</h2>
+        <div id="docBody"></div>
+      </article>
+
+      <div class="mt-8 flex items-center justify-between gap-3">
+        <a href="05-4-itsm/03-43-change-enablement.html" class="flex items-center gap-2 rounded-md border px-3 py-1.5 hover:bg-slate-100 disabled:opacity-40" >
+          <i data-lucide="arrow-left" class="h-4 w-4"></i> Sebelumnya
+        </a>
+        <a href="06-5-itom-pengantar/01-51-cmdb-discovery.html" class="ml-auto flex items-center gap-2 rounded-md border px-3 py-1.5 hover:bg-slate-100 disabled:opacity-40" >
+          Selanjutnya <i data-lucide="arrow-right" class="h-4 w-4"></i>
+        </a>
+      </div>
+    </main>
+
+    <!-- Right mini-TOC -->
+    <aside class="hidden lg:block sticky top-24 h-max rounded-xl border bg-white p-4 text-sm m-6">
+      <div class="mb-2 font-semibold">Di halaman ini</div>
+      <nav id="miniTOC" class="space-y-1"></nav>
+    </aside>
+  </div>
+
+  <script id="mdsrc" type="text/markdown">---
+
+### Sub-bab
+
+- [5.1 CMDB & Discovery](06-5-itom-pengantar/01-51-cmdb-discovery.html)
+- [5.2 Event Management](06-5-itom-pengantar/02-52-event-management.html)</script>
+
+  <script>
+    // Drawer handlers
+    const drawer = document.getElementById('drawer');
+    const overlay = document.getElementById('overlay');
+    document.getElementById('btnOpen').addEventListener('click', () => { drawer.classList.add('drawer-open'); overlay.classList.remove('hidden'); });
+    document.getElementById('btnClose').addEventListener('click', () => { drawer.classList.remove('drawer-open'); overlay.classList.add('hidden'); });
+    overlay.addEventListener('click', () => { drawer.classList.remove('drawer-open'); overlay.classList.add('hidden'); });
+
+    // Render MD -> HTML + Mermaid
+    const raw = document.getElementById('mdsrc').textContent;
+    const mermaidified = raw.replace(/```mermaid([\s\S]*?)```/g, function(m, code) {
+    return '<div class="mermaid">' + code.replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</div>';
+    });
+    const html = DOMPurify.sanitize(marked.parse(mermaidified, { mangle:false, headerIds:false, breaks:true }));
+    const body = document.getElementById('docBody'); body.innerHTML = html;
+
+    // Mini-TOC (H4)
+    function slugify(t) { return t.toLowerCase().replace(/[^a-z0-9\u00C0-\u024f\s-]/g,'').trim().replace(/\s+/g,'-').replace(/-+/g,'-'); }
+    const heads = body.querySelectorAll('h4');
+    const mtoc = document.getElementById('miniTOC');
+    heads.forEach(h => { if(!h.id) h.id = slugify(h.textContent); const a = document.createElement('a'); a.href = '#'+h.id; a.textContent = h.textContent; a.className='block rounded px-2 py-1 hover:bg-slate-50'; mtoc.appendChild(a); });
+
+    mermaid.init(undefined, body.querySelectorAll('.mermaid'));
+
+    // Sidebar active highlighting
+    const here = document.querySelector('a[data-current="true"]'); if (here) here.classList.add('active');
+
+    lucide.createIcons();
+  </script>
+</body>
+</html>

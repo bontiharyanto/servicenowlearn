@@ -1,0 +1,284 @@
+[
+  {
+    "num": 1,
+    "title": "Daftar Isi",
+    "index_href": "01-daftar-isi/index.html",
+    "subs": []
+  },
+  {
+    "num": 2,
+    "title": "1. Pendahuluan",
+    "index_href": "02-1-pendahuluan/index.html",
+    "subs": []
+  },
+  {
+    "num": 3,
+    "title": "2. Getting Started",
+    "index_href": "03-2-getting-started/index.html",
+    "subs": []
+  },
+  {
+    "num": 4,
+    "title": "3. Konsep Dasar & Terminologi",
+    "index_href": "04-3-konsep-dasar-terminologi/index.html",
+    "subs": []
+  },
+  {
+    "num": 5,
+    "title": "4. ITSM",
+    "index_href": "05-4-itsm/index.html",
+    "subs": [
+      {
+        "num": 1,
+        "title": "4.1 Incident Management",
+        "href": "05-4-itsm/01-41-incident-management.html"
+      },
+      {
+        "num": 2,
+        "title": "4.2 Problem Management",
+        "href": "05-4-itsm/02-42-problem-management.html"
+      },
+      {
+        "num": 3,
+        "title": "4.3 Change Enablement",
+        "href": "05-4-itsm/03-43-change-enablement.html"
+      }
+    ]
+  },
+  {
+    "num": 6,
+    "title": "5. ITOM (Pengantar)",
+    "index_href": "06-5-itom-pengantar/index.html",
+    "subs": [
+      {
+        "num": 1,
+        "title": "5.1 CMDB & Discovery",
+        "href": "06-5-itom-pengantar/01-51-cmdb-discovery.html"
+      },
+      {
+        "num": 2,
+        "title": "5.2 Event Management",
+        "href": "06-5-itom-pengantar/02-52-event-management.html"
+      }
+    ]
+  },
+  {
+    "num": 7,
+    "title": "6. Integrasi & Otomasi",
+    "index_href": "07-6-integrasi-otomasi/index.html",
+    "subs": [
+      {
+        "num": 1,
+        "title": "6.1 REST Table API (Inbound)",
+        "href": "07-6-integrasi-otomasi/01-61-rest-table-api-inbound.html"
+      },
+      {
+        "num": 2,
+        "title": "6.2 Scripted REST API (Inbound kustom)",
+        "href": "07-6-integrasi-otomasi/02-62-scripted-rest-api-inbound-kustom.html"
+      },
+      {
+        "num": 3,
+        "title": "6.3 Outbound REST, SOAP, dan Import Set",
+        "href": "07-6-integrasi-otomasi/03-63-outbound-rest-soap-dan-import-set.html"
+      },
+      {
+        "num": 4,
+        "title": "6.4 IntegrationHub dan Spokes",
+        "href": "07-6-integrasi-otomasi/04-64-integrationhub-dan-spokes.html"
+      },
+      {
+        "num": 5,
+        "title": "6.5 Flow Designer – lanjutan",
+        "href": "07-6-integrasi-otomasi/05-65-flow-designer-lanjutan.html"
+      },
+      {
+        "num": 6,
+        "title": "6.6 Event driven dan Webhook",
+        "href": "07-6-integrasi-otomasi/06-66-event-driven-dan-webhook.html"
+      },
+      {
+        "num": 7,
+        "title": "6.7 Email integration",
+        "href": "07-6-integrasi-otomasi/07-67-email-integration.html"
+      },
+      {
+        "num": 8,
+        "title": "6.8 MID Server, JDBC, File, dan Discovery",
+        "href": "07-6-integrasi-otomasi/08-68-mid-server-jdbc-file-dan-discovery.html"
+      },
+      {
+        "num": 9,
+        "title": "6.9 Keamanan dan Kredensial",
+        "href": "07-6-integrasi-otomasi/09-69-keamanan-dan-kredensial.html"
+      },
+      {
+        "num": 10,
+        "title": "6.10 Error handling, Idempotensi, dan Retry",
+        "href": "07-6-integrasi-otomasi/10-610-error-handling-idempotensi-dan-retry.html"
+      },
+      {
+        "num": 11,
+        "title": "6.11 Observabilitas dan Audit",
+        "href": "07-6-integrasi-otomasi/11-611-observabilitas-dan-audit.html"
+      },
+      {
+        "num": 12,
+        "title": "6.12 Decision Matrix Integrasi",
+        "href": "07-6-integrasi-otomasi/12-612-decision-matrix-integrasi.html"
+      },
+      {
+        "num": 13,
+        "title": "6.13 Contoh end to end: Incident to Slack and Jira",
+        "href": "07-6-integrasi-otomasi/13-613-contoh-end-to-end-incident-to-slack-and-jira.html"
+      },
+      {
+        "num": 14,
+        "title": "6.14 Checklist implementasi aman",
+        "href": "07-6-integrasi-otomasi/14-614-checklist-implementasi-aman.html"
+      },
+      {
+        "num": 15,
+        "title": "6.15 Arsitektur Integrasi Tingkat Tinggi",
+        "href": "07-6-integrasi-otomasi/15-615-arsitektur-integrasi-tingkat-tinggi.html"
+      },
+      {
+        "num": 16,
+        "title": "6.16 Checklist implementasi aman",
+        "href": "07-6-integrasi-otomasi/16-616-checklist-implementasi-aman.html"
+      }
+    ]
+  },
+  {
+    "num": 8,
+    "title": "7. Development di ServiceNow",
+    "index_href": "08-7-development-di-servicenow/index.html",
+    "subs": []
+  },
+  {
+    "num": 9,
+    "title": "8. Service Catalog & Request Fulfillment",
+    "index_href": "09-8-service-catalog-request-fulfillment/index.html",
+    "subs": [
+      {
+        "num": 1,
+        "title": "8.11 Kinerja dan Metrik",
+        "href": "09-8-service-catalog-request-fulfillment/01-811-kinerja-dan-metrik.html"
+      },
+      {
+        "num": 2,
+        "title": "8.12 Script Contoh",
+        "href": "09-8-service-catalog-request-fulfillment/02-812-script-contoh.html"
+      },
+      {
+        "num": 3,
+        "title": "8.13 Diagram Lifecycle Request",
+        "href": "09-8-service-catalog-request-fulfillment/03-813-diagram-lifecycle-request.html"
+      },
+      {
+        "num": 4,
+        "title": "8.14 Keputusan Desain Cepat",
+        "href": "09-8-service-catalog-request-fulfillment/04-814-keputusan-desain-cepat.html"
+      },
+      {
+        "num": 5,
+        "title": "8.15 Checklist Kesiapan Go-Live",
+        "href": "09-8-service-catalog-request-fulfillment/05-815-checklist-kesiapan-go-live.html"
+      }
+    ]
+  },
+  {
+    "num": 10,
+    "title": "9. Reporting & Dashboard",
+    "index_href": "10-9-reporting-dashboard/index.html",
+    "subs": []
+  },
+  {
+    "num": 11,
+    "title": "10. Keamanan & Akses",
+    "index_href": "11-10-keamanan-akses/index.html",
+    "subs": []
+  },
+  {
+    "num": 12,
+    "title": "11. Deployment & Migrasi",
+    "index_href": "12-11-deployment-migrasi/index.html",
+    "subs": []
+  },
+  {
+    "num": 13,
+    "title": "12. Praktik Terbaik",
+    "index_href": "13-12-praktik-terbaik/index.html",
+    "subs": []
+  },
+  {
+    "num": 14,
+    "title": "13. Runbook Ringkas",
+    "index_href": "14-13-runbook-ringkas/index.html",
+    "subs": []
+  },
+  {
+    "num": 15,
+    "title": "14. Glosarium",
+    "index_href": "15-14-glosarium/index.html",
+    "subs": []
+  },
+  {
+    "num": 16,
+    "title": "15. Referensi",
+    "index_href": "16-15-referensi/index.html",
+    "subs": []
+  },
+  {
+    "num": 17,
+    "title": "16. Governance & Compliance",
+    "index_href": "17-16-governance-compliance/index.html",
+    "subs": [
+      {
+        "num": 1,
+        "title": "16.1 Prinsip Umum & Peran",
+        "href": "17-16-governance-compliance/01-161-prinsip-umum-peran.html"
+      },
+      {
+        "num": 2,
+        "title": "16.2 TOGAF (Enterprise Architecture)",
+        "href": "17-16-governance-compliance/02-162-togaf-enterprise-architecture.html"
+      },
+      {
+        "num": 3,
+        "title": "16.3 COBIT (Governance of Enterprise IT)",
+        "href": "17-16-governance-compliance/03-163-cobit-governance-of-enterprise-it.html"
+      },
+      {
+        "num": 4,
+        "title": "16.4 ISO/IEC 27001 (ISMS)",
+        "href": "17-16-governance-compliance/04-164-isoiec-27001-isms.html"
+      },
+      {
+        "num": 5,
+        "title": "16.5 PDP (UU Pelindungan Data Pribadi – Indonesia)",
+        "href": "17-16-governance-compliance/05-165-pdp-uu-pelindungan-data-pribadi-indonesia.html"
+      },
+      {
+        "num": 6,
+        "title": "16.6 CMDB Governance (Lintas Framework)",
+        "href": "17-16-governance-compliance/06-166-cmdb-governance-lintas-framework.html"
+      },
+      {
+        "num": 7,
+        "title": "16.7 Change & Release Governance",
+        "href": "17-16-governance-compliance/07-167-change-release-governance.html"
+      },
+      {
+        "num": 8,
+        "title": "16.8 Metrik & Pelaporan",
+        "href": "17-16-governance-compliance/08-168-metrik-pelaporan.html"
+      },
+      {
+        "num": 9,
+        "title": "16.9 Template & Artefak",
+        "href": "17-16-governance-compliance/09-169-template-artefak.html"
+      }
+    ]
+  }
+]

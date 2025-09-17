@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>ServiceNow Docs + Dashboard (Auto)</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Markdown parser + sanitizer -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.3/dist/purify.min.js"></script>
+  <!-- Mermaid -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+  <style>
+    .drawer-enter { transform: translateX(-100%); }
+    .drawer-open { transform: translateX(0); }
+    .content > section { scroll-margin-top: 90px; }
+    .nav-btn.active { background: #f1f5f9; font-weight: 600; }
+    .prose :where(pre):not(:where(.not-prose *)) { background: #0f172a; color: #e2e8f0; padding: 1rem; border-radius: 0.75rem; overflow:auto; }
+    .prose :where(code):not(:where(pre code,.not-prose *)){ background:#e2e8f0; padding:.15rem .35rem; border-radius:.35rem;}
+    .prose h2, .prose h3, .prose h4 { scroll-margin-top: 90px; }
+  </style>
+  <script>mermaid.initialize({ startOnLoad: false, theme: 'default' });</script>
+</head>
+<body class="bg-slate-50 text-slate-900">
+  <!-- Topbar -->
+  <header class="sticky top-0 z-30 flex items-center justify-between gap-3 border-b bg-white px-4 py-3">
+    <div class="flex items-center gap-3">
+      <button id="btnOpen" class="md:hidden rounded-lg p-2 hover:bg-slate-100" aria-label="Open menu">
+        <i data-lucide="menu" class="h-5 w-5"></i>
+      </button>
+      <div class="flex items-center gap-2">
+        <i data-lucide="book-open" class="h-5 w-5"></i>
+        <h1 class="text-lg font-semibold">ServiceNow Documentation + Dashboard</h1>
+      </div>
+    </div>
+    <div class="flex items-center gap-3 text-sm text-slate-500">
+      <span id="mdPathTxt" class="hidden md:inline"></span>
+      <a id="openMD" class="rounded-md border px-2 py-1 hover:bg-slate-100" target="_blank" rel="noopener">Lihat .md</a>
+    </div>
+  </header>
+
+  <!-- Overlay (mobile) -->
+  <div id="overlay" class="fixed inset-0 z-40 hidden bg-black/40 md:hidden"></div>
+
+  <div class="mx-auto grid max-w-7xl grid-cols-1 md:grid-cols-[280px_1fr]">
+    <!-- Sidebar / Drawer -->
+    <aside id="drawer" class="drawer-enter fixed left-0 top-0 z-50 h-full w-72 overflow-y-auto border-r bg-white p-4 transition-transform md:static md:drawer-open">
+      <div class="mb-4 flex items-center justify-between md:hidden">
+        <span class="font-semibold">Menu</span>
+        <button id="btnClose" class="rounded-lg p-2 hover:bg-slate-100" aria-label="Close menu">
+          <i data-lucide="x" class="h-5 w-5"></i>
+        </button>
+      </div>
+      <nav id="nav" class="space-y-1 text-sm"></nav>
+      <div class="mt-6 hidden text-xs text-slate-500 md:block">
+        Klik item untuk membuka bagian dokumen atau pilih <b>Dashboard</b> untuk KPI.
+      </div>
+    </aside>
+
+    <!-- Main content -->
+    <main id="main" class="content p-4 md:p-6">
+      <!-- Dashboard -->
+      <section id="dashboard" class="space-y-6">
+        <h2 class="mb-2 text-xl font-bold">Dashboard</h2>
+        <div class="grid grid-cols-2 gap-3 md:grid-cols-5">
+          <div class="rounded-2xl border bg-white p-4"><div class="text-xs text-slate-500">SLA Compliance</div><div id="kpiSLA" class="text-2xl font-semibold">-</div></div>
+          <div class="rounded-2xl border bg-white p-4"><div class="text-xs text-slate-500">Total Incidents</div><div id="kpiInc" class="text-2xl font-semibold">-</div></div>
+          <div class="rounded-2xl border bg-white p-4"><div class="text-xs text-slate-500">P1 Count</div><div id="kpiP1" class="text-2xl font-semibold">-</div></div>
+          <div class="rounded-2xl border bg-white p-4"><div class="text-xs text-slate-500">Change Success</div><div id="kpiChg" class="text-2xl font-semibold">-</div></div>
+          <div class="rounded-2xl border bg-white p-4"><div class="text-xs text-slate-500">Integration Errors</div><div id="kpiErr" class="text-2xl font-semibold">-</div></div>
+        </div>
+        <div class="rounded-2xl border bg-white">
+          <div class="border-b p-4 text-base font-semibold">SLA vs Volume Incident per Minggu</div>
+          <div class="h-64 p-4"><canvas id="chartHome"></canvas></div>
+        </div>
+        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <div class="rounded-2xl border bg-white">
+            <div class="border-b p-4 text-base font-semibold">RITM Opened vs Closed</div>
+            <div class="h-64 p-4"><canvas id="chartRITM"></canvas></div>
+          </div>
+          <div class="rounded-2xl border bg-white">
+            <div class="border-b p-4 text-base font-semibold">Change Lead Time (minggu)</div>
+            <div class="h-64 p-4"><canvas id="chartLead"></canvas></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Markdown will be injected below -->
+      <section id="docs" class="pt-10">
+        <article id="docBody" class="prose max-w-none"></article>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    // ====== Config: path ke file Markdown (bisa diberi query ?md=path) ======
+    const urlParams = new URLSearchParams(location.search);
+    const MD_PATH = urlParams.get('md') || 'ServiceNow_Documentation.md';
+
+    document.getElementById('mdPathTxt').textContent = MD_PATH;
+    document.getElementById('openMD').href = MD_PATH;
+
+    // ====== Sidebar builder ======
+    const nav = document.getElementById('nav');
+    const sections = ['dashboard']; // dashboard always first
+
+    function slugify(text) {
+      return text.toLowerCase()
+        .replace(/[^a-z0-9\\u00C0-\\u024f\\s-]/g, '') // letters, numbers, spaces
+        .trim()
+        .replace(/\\s+/g, '-')
+        .replace(/-+/g, '-');
+    }
+
+    function buildNavFromHeadings(article, activeId='dashboard') {
+      nav.innerHTML = '';
+
+      // Add Dashboard button
+      const dashBtn = document.createElement('button');
+      dashBtn.className = 'nav-btn flex w-full items-center gap-3 rounded-xl px-3 py-2 text-left transition hover:bg-slate-100 ' + (activeId==='dashboard'?'active':'');
+      dashBtn.innerHTML = '<i data-lucide=\"layout-dashboard\" class=\"h-4 w-4\"></i><span>Dashboard</span>';
+      dashBtn.onclick = () => { document.getElementById('dashboard').scrollIntoView({behavior:'smooth'}); setActive('dashboard'); };
+      nav.appendChild(dashBtn);
+
+      // Scan headings H2-H4 to build menu
+      const heads = article.querySelectorAll('h2,h3');
+      let currentUl = null;
+
+      heads.forEach(h => {
+        const level = h.tagName;
+        if (!h.id) h.id = slugify(h.textContent);
+
+        const btn = document.createElement('button');
+        btn.className = 'nav-btn flex w-full items-center gap-3 rounded-xl px-3 py-2 text-left transition hover:bg-slate-100';
+        btn.innerHTML = `<i data-lucide=\"${level==='H2'?'book-open':'corner-down-right'}\" class=\"h-4 w-4\"></i><span>${h.textContent}</span>`;
+        btn.onclick = () => { document.getElementById(h.id).scrollIntoView({behavior:'smooth'}); setActive(h.id); };
+
+        if (level === 'H2') {
+          nav.appendChild(btn);
+          currentUl = document.createElement('div');
+          currentUl.className = 'ml-6 mt-1 space-y-1';
+          nav.appendChild(currentUl);
+        } else {
+          const wrap = document.createElement('div');
+          wrap.appendChild(btn);
+          currentUl?.appendChild(wrap);
+        }
+      });
+
+      lucide.createIcons();
+    }
+
+    function setActive(id) {
+      document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+      buildNavFromHeadings(document.getElementById('docBody'), id);
+      closeDrawer();
+    }
+
+    // ====== Drawer handlers ======
+    const drawer = document.getElementById('drawer');
+    const overlay = document.getElementById('overlay');
+    document.getElementById('btnOpen').addEventListener('click', () => { drawer.classList.add('drawer-open'); overlay.classList.remove('hidden'); });
+    document.getElementById('btnClose').addEventListener('click', () => { drawer.classList.remove('drawer-open'); overlay.classList.add('hidden'); });
+    overlay.addEventListener('click', () => { drawer.classList.remove('drawer-open'); overlay.classList.add('hidden'); });
+    function closeDrawer(){ drawer.classList.remove('drawer-open'); overlay.classList.add('hidden'); }
+
+    // ====== Load Markdown, parse, render Mermaid ======
+    async function loadMarkdown() {
+      try {
+        const res = await fetch(MD_PATH, {cache:'no-cache'});
+        const text = await res.text();
+
+        // Replace ```mermaid blocks with <div class="mermaid"> to render later
+        const mermaidified = text.replace(/```mermaid([\\s\\S]*?)```/g, (m, code) => `<div class=\"mermaid\">${code.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>`);
+
+        // Parse markdown -> HTML
+        const rawHtml = marked.parse(mermaidified, { mangle: false, headerIds: false, breaks: true });
+        const safeHtml = DOMPurify.sanitize(rawHtml);
+
+        const article = document.getElementById('docBody');
+        article.innerHTML = safeHtml;
+
+        // Assign ids to headings for deep links
+        article.querySelectorAll('h2,h3,h4').forEach(h => {
+          if (!h.id) h.id = slugify(h.textContent);
+        });
+
+        // Build nav from headings
+        buildNavFromHeadings(article);
+
+        // Render Mermaid blocks
+        mermaid.init(undefined, article.querySelectorAll('.mermaid'));
+      } catch (e) {
+        document.getElementById('docBody').innerHTML = `<div class="rounded-xl border bg-white p-4 text-sm text-red-600">Gagal memuat Markdown: ${e}</div>`;
+      }
+    }
+
+    // ====== KPI Datasets (sample) + charts ======
+    const weeks = [
+      { w:'W1', incidents:62, p1:2, mttr:7.1, mtta:3.6, sla:0.93 },
+      { w:'W2', incidents:58, p1:1, mttr:6.4, mtta:3.1, sla:0.95 },
+      { w:'W3', incidents:74, p1:3, mttr:8.2, mtta:4.0, sla:0.91 },
+      { w:'W4', incidents:55, p1:1, mttr:5.9, mtta:2.8, sla:0.97 },
+      { w:'W5', incidents:69, p1:2, mttr:6.8, mtta:3.3, sla:0.94 },
+    ];
+    const changes = [
+      { w:'W1', success:24, failed:1, lead:2.8 },
+      { w:'W2', success:22, failed:2, lead:3.1 },
+      { w:'W3', success:27, failed:1, lead:2.5 },
+      { w:'W4', success:25, failed:3, lead:3.6 },
+      { w:'W5', success:28, failed:1, lead:2.2 },
+    ];
+    const ritm = [
+      { w:'W1', opened:120, closed:110 },
+      { w:'W2', opened:130, closed:128 },
+      { w:'W3', opened:140, closed:132 },
+      { w:'W4', opened:115, closed:118 },
+      { w:'W5', opened:150, closed:147 },
+    ];
+
+    const avg = (arr) => arr.reduce((a,b)=>a+b,0)/arr.length;
+    const sum = (arr, key) => arr.reduce((a,b)=>a+b[key],0);
+    function populateKPIs(){
+      const slaPct = Math.round(avg(weeks.map(d=>d.sla))*100);
+      const inc = sum(weeks,'incidents');
+      const p1 = sum(weeks,'p1');
+      const chgSuccess = Math.round((sum(changes,'success')/(sum(changes,'success')+sum(changes,'failed')))*100);
+      document.getElementById('kpiSLA').textContent = slaPct+'%';
+      document.getElementById('kpiInc').textContent = inc;
+      document.getElementById('kpiP1').textContent = p1;
+      document.getElementById('kpiChg').textContent = chgSuccess+'%';
+      document.getElementById('kpiErr').textContent = 7+4+9+3+5; // contoh
+    }
+
+    let chartHome, chartRITM, chartLead;
+    function buildCharts(){
+      const labels = weeks.map(d=>d.w);
+      chartHome = new Chart(document.getElementById('chartHome'), {
+        type:'bar',
+        data:{ labels, datasets:[
+          { label:'Incidents', data: weeks.map(d=>d.incidents) },
+          { type:'line', label:'SLA', data: weeks.map(d=>Math.round(d.sla*100)), yAxisID:'y1' }
+        ]},
+        options:{ responsive:true, maintainAspectRatio:false, scales:{ y:{beginAtZero:true}, y1:{position:'right', beginAtZero:true, ticks:{callback:v=>v+'%'}} } }
+      });
+      chartRITM = new Chart(document.getElementById('chartRITM'), {
+        type:'bar', data:{ labels, datasets:[ {label:'Opened', data: ritm.map(d=>d.opened)}, {label:'Closed', data: ritm.map(d=>d.closed)} ] }, options:{ responsive:true, maintainAspectRatio:false }
+      });
+      chartLead = new Chart(document.getElementById('chartLead'), {
+        type:'line', data:{ labels, datasets:[ {label:'Lead time', data: changes.map(d=>d.lead)} ] }, options:{ responsive:true, maintainAspectRatio:false }
+      });
+    }
+
+    // Init
+    loadMarkdown();
+    populateKPIs();
+    buildCharts();
+    lucide.createIcons();
+  </script>
+</body>
+</html>

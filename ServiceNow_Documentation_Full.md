@@ -3,28 +3,28 @@
 > Catatan belajar & implementasi ServiceNow. Gunakan sebagai living document—update seiring progres.
 
 ## Daftar Isi
-1. Pendahuluan  
-2. Getting Started  
-3. Konsep Dasar & Terminologi  
-4. ITSM  
-   - Incident Management  
-   - Problem Management  
-   - Change Enablement  
-5. ITOM (Pengantar)  
-   - CMDB & Discovery  
-   - Event Management  
-6. Integrasi & Otomasi  
-   - REST API & Scripted REST  
-   - Flow Designer  
-7. Development di ServiceNow  
-8. Service Catalog & Request Fulfillment  
-9. Reporting & Dashboard  
-10. Keamanan & Akses  
-11. Deployment & Migrasi  
-12. Praktik Terbaik  
-13. Runbook Ringkas  
-14. Glosarium  
-15. Referensi  
+- [1. Pendahuluan](#1-pendahuluan)
+- [2. Getting Started](#2-getting-started)
+- [3. Konsep Dasar & Terminologi](#3-konsep-dasar--terminologi)
+- [4. ITSM](#4-itsm)
+  - [4.1 Incident Management](#41-incident-management)
+  - [4.2 Problem Management](#42-problem-management)
+  - [4.3 Change Enablement](#43-change-enablement)
+- [5. ITOM (Pengantar)](#5-itom-pengantar)
+  - [5.1 CMDB & Discovery](#51-cmdb--discovery)
+  - [5.2 Event Management](#52-event-management)
+- [6. Integrasi & Otomasi](#6-integrasi--otomasi)
+  - [6.1 REST API & Scripted REST](#61-rest-api--scripted-rest)
+  - [6.2 Flow Designer](#62-flow-designer)
+- [7. Development di ServiceNow](#7-development-di-servicenow)
+- [8. Service Catalog & Request Fulfillment](#8-service-catalog--request-fulfillment)
+- [9. Reporting & Dashboard](#9-reporting--dashboard)
+- [10. Keamanan & Akses](#10-keamanan--akses)
+- [11. Deployment & Migrasi](#11-deployment--migrasi)
+- [12. Praktik Terbaik](#12-praktik-terbaik)
+- [13. Runbook Ringkas](#13-runbook-ringkas)
+- [14. Glosarium](#14-glosarium)
+- [15. Referensi](#15-referensi)
 
 ---
 
@@ -46,7 +46,7 @@ Dokumen ini merangkum pembelajaran ServiceNow untuk skenario umum: ITSM, ITOM, d
 
 ## 4. ITSM
 
-### Incident Management
+### 4.1 Incident Management
 **Tujuan**: mengembalikan layanan normal secepatnya dan meminimalkan dampak bisnis.  
 **Alur standar**:
 1. *Log* → buat incident (portal, email, integrasi)  
@@ -107,12 +107,12 @@ sequenceDiagram
   SN->>SN: Close Incident
 ```
 
-### Problem Management
+### 4.2 Problem Management
 - Tautkan **incident** berulang ke **problem**.
 - Root Cause Analysis (RCA) → gunakan *Known Error* base.
 - *Change* bisa dibuat dari *problem* untuk perbaikan permanen.
 
-### Change Enablement
+### 4.3 Change Enablement
 - Tipe: *Standard* (pre-approved), *Normal*, *Emergency*.
 - Workflow: *Plan → Assess → Approve (CAB) → Implement → Review → Close*.
 - Integrasi kalender rilis & blackout windows.
@@ -142,7 +142,7 @@ flowchart LR
 
 ## 5. ITOM (Pengantar)
 
-### CMDB & Discovery
+### 5.1 CMDB & Discovery
 - **CMDB**: sumber kebenaran CI (Configuration Item) & relasi.
 - **Discovery**: menemukan perangkat/aplikasi (via MID Server).
 - Atur **Identification & Reconciliation** untuk mencegah duplikasi.
@@ -163,15 +163,18 @@ flowchart LR
   IDR --> CMDB
   CMDB --> QRY[Queries / Reports]
   CMDB --> REL[CI Relationships]
+
+  note right of IDR: Cegah duplikasi
+  note right of CMDB: SSoT untuk CI & relasi
 ```
 
-### Event Management
+### 5.2 Event Management
 - Konsumsi event dari tool monitoring → buat alert → korelasi → *auto-ticketing* opsional.
 - Gunakan *alert aggregation* untuk mengurangi noise.
 
 ## 6. Integrasi & Otomasi
 
-### REST API & Scripted REST
+### 6.1 REST API & Scripted REST
 - **REST Table API**: CRUD terhadap tabel (contoh: `incident`).
 - **Scripted REST**: endpoint kustom (logika validasi/transformasi).
 - Contoh *curl* sederhana:
@@ -179,7 +182,7 @@ flowchart LR
   curl -u user:pass     "https://<instance>.service-now.com/api/now/table/incident?sysparm_limit=1"
   ```
 
-### Flow Designer
+### 6.2 Flow Designer
 - Otomasi berbasis *low-code*.
 - Flow = trigger + action.
 - Contoh: otomatis assign incident dengan kategori tertentu ke group support.
@@ -194,7 +197,7 @@ flowchart TD
   LUP --> DEC{Priority High?}
   DEC -->|Yes| ASSIGN[Set Assignment Group]
   DEC -->|No| TAG[Add Work Notes]
-  ASSIGN --> SUBF[Call Subflow Notify]
+  ASSIGN --> SUBF[Call Subflow (Notify)]
   TAG --> SUBF
   SUBF --> ERR{Error?}
   ERR -->|Yes| HNDL[Error Handler: Rollback/Log]
@@ -263,40 +266,4 @@ Then    : set assignment_group = "Network Support"
 - [ServiceNow Docs](https://docs.servicenow.com/)
 - [Developer Portal](https://developer.servicenow.com/)
 - [Community](https://www.servicenow.com/community.html)
-- [Now Learning (Training & Sertifikasi)](https://nowlearning.service-now.com/)
-
-### Referensi resmi per modul
-#### ITSM
-- Product overview: https://www.servicenow.com/products/itsm.html
-- Dokumentasi produk (landing): https://docs.servicenow.com/
-- Developer tutorials & API: https://developer.servicenow.com/
-- Community topic: https://www.servicenow.com/community.html
-- Now Learning (kursus & sertifikasi): https://nowlearning.service-now.com/
-
-#### ITOM
-- Product overview: https://www.servicenow.com/products/it-operations-management.html
-- Dokumentasi produk (landing): https://docs.servicenow.com/
-- Developer tutorials & API: https://developer.servicenow.com/
-- Community topic: https://www.servicenow.com/community.html
-- Now Learning (kursus & sertifikasi): https://nowlearning.service-now.com/
-
-#### HRSD
-- Product overview: https://www.servicenow.com/products/hr-service-delivery.html
-- Dokumentasi produk (landing): https://docs.servicenow.com/
-- Developer tutorials & API: https://developer.servicenow.com/
-- Community topic: https://www.servicenow.com/community.html
-- Now Learning (kursus & sertifikasi): https://nowlearning.service-now.com/
-
-#### CSM
-- Product overview: https://www.servicenow.com/products/customer-service-management.html
-- Dokumentasi produk (landing): https://docs.servicenow.com/
-- Developer tutorials & API: https://developer.servicenow.com/
-- Community topic: https://www.servicenow.com/community.html
-- Now Learning (kursus & sertifikasi): https://nowlearning.service-now.com/
-
-#### App Engine
-- Product overview: https://www.servicenow.com/products/app-engine.html
-- Dokumentasi produk (landing): https://docs.servicenow.com/
-- Developer tutorials & API: https://developer.servicenow.com/
-- Community topic: https://www.servicenow.com/community.html
-- Now Learning (kursus & sertifikasi): https://nowlearning.service-now.com/
+- Training & sertifikasi
